@@ -1,33 +1,36 @@
-create table Corso(
-    titulo  varchar(30) PRIMARY key,
-    attiva  boolean
+CREATE TABLE Corso(
+    titulo  VARCHAR(30) PRIMARY KEY,
+    attiva  BOOLEAN NOT NULL
 );
-create TABLE Docente(
-    nome    varchar(20), 
-    cognome varchar(20),
+CREATE TABLE Docente(
+    nome    VARCHAR(20), 
+    cognome VARCHAR(20),
+    attiva BOOLEAN NOT NULL,
     CONSTRAINT doc_k PRIMARY KEY (nome, cognome)
 );
-create table Utente(
-    account VARCHAR(20) PRIMARY key,
-    pass    varchar(20),
-    admin   boolean
+CREATE TABLE Utente(
+    account VARCHAR(20) PRIMARY KEY,
+    pass    VARCHAR(20),
+    admin   BOOLEAN NOT NULL
 );
-create table Imparte(
+CREATE TABLE Imparte(
     nome    VARCHAR(20),
-    cognome varchar(20),
-    corso   varchar(30),
+    cognome VARCHAR(20),
+    corso   VARCHAR(30),
+    attiva BOOLEAN NOT NULL,
     CONSTRAINT f_doc FOREIGN KEY (nome, cognome) REFERENCES Docente(nome, cognome),
     CONSTRAINT f_cor FOREIGN KEY (corso) REFERENCES Corso(nome, titulo),
-    CONSTRAINT p_imp PRIMARY key (nome, cognome, corso)
+    CONSTRAINT p_imp PRIMARY KEY (nome, cognome, corso)
 );
-create table Prenotazione(
-    usuario varchar(20),
+CREATE TABLE Prenotazione(
+    usuario VARCHAR(20),
     nome    VARCHAR(20),
-    cognome varchar(20),
-    corso   varchar(30),
-    giorno  varchar(15),
-    ora     int,
+    cognome VARCHAR(20),
+    corso   VARCHAR(30),
+    giorno  VARCHAR(15),
+    ora     INT,
+    stato VARCHAR(10) NOT NULL CHECK (stato='ATTIVA' OR stato='EFFETTUATA' OR stato='CANCELLATA'),
     CONSTRAINT f_preimp FOREIGN KEY (nome, cognome, corso) REFERENCES Imparte(nome, cognome, corso),
     CONSTRAINT f_impus FOREIGN KEY (usuario) REFERENCES Utente(account),
-    CONSTRAINT p_pre PRIMARY key (usuario, giorno, ora)
+    CONSTRAINT p_pre PRIMARY KEY (usuario, giorno, ora)
 );
