@@ -19,7 +19,7 @@ CREATE TABLE Imparte(
     corso   VARCHAR(30),
     attiva BOOLEAN NOT NULL,
     CONSTRAINT f_doc FOREIGN KEY (nome, cognome) REFERENCES Docente(nome, cognome),
-    CONSTRAINT f_cor FOREIGN KEY (corso) REFERENCES Corso(nome, titulo),
+    CONSTRAINT f_cor FOREIGN KEY (corso) REFERENCES Corso(titulo),
     CONSTRAINT p_imp PRIMARY KEY (nome, cognome, corso)
 );
 CREATE TABLE Prenotazione(
