@@ -34,8 +34,8 @@
         methods:{
             enviare:function(){
                 var self = this;
-                $.get(this.link, {utente: this.account , password: this.pass} , function(data) {
-                    info = "JJKLJkklkjn";
+                $.post(this.link, {utente: this.account , password: this.pass} , function(data) {
+                    self.info = data;
                 });
             }
         }

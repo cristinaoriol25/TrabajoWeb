@@ -14,7 +14,12 @@ public class ServletController extends javax.servlet.http.HttpServlet {
     private void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try (PrintWriter out = response.getWriter()) {
 
-            out.println(request.getParameter("utente"));
+            String fun = request.getParameter("azione");
+
+            String account = request.getParameter("utente");
+            String pass = request.getParameter("password");
+
+
 
             out.println("Risposta a invocazione senza parametri");
 
