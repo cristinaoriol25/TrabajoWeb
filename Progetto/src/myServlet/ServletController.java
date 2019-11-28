@@ -8,20 +8,40 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import static dao.DAO.*;
+
 @WebServlet(name = "ServletController", urlPatterns = {"/ServletController"})
 public class ServletController extends javax.servlet.http.HttpServlet {
+    
+
+
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try (PrintWriter out = response.getWriter()) {
 
             String fun = request.getParameter("azione");
+            if (fun.equals("connessione")) {
+                String account = request.getParameter("utente");
+                String pass = request.getParameter("password");
+                if (correctlog(account,pass)) {
+                    if (getRuolo(account)) {
+                        out.println("Hola admin");
+                    } else {
+                        out.println("Hola usuario");
+                    }
+                }
+                else {
+                    out.println("Usuario inexistente");
+                }
+            }
+            else {
+                    out.println("Accion inexistente");
+            }
 
-            String account = request.getParameter("utente");
-            String pass = request.getParameter("password");
 
 
 
-            out.println("Risposta a invocazione senza parametri");
+
 
         }
     }
