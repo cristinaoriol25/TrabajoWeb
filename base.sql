@@ -10,7 +10,7 @@ CREATE TABLE Docente(
 );
 CREATE TABLE Utente(
     account VARCHAR(20) PRIMARY KEY,
-    pass    VARCHAR(20),
+    pass    VARCHAR(20) NOT NULL,
     admin   BOOLEAN NOT NULL
 );
 CREATE TABLE Imparte(
@@ -27,7 +27,7 @@ CREATE TABLE Prenotazione(
     nome    VARCHAR(20),
     cognome VARCHAR(20),
     corso   VARCHAR(30),
-    giorno  VARCHAR(15),
+    giorno  VARCHAR(15) CHECK (giorno='LUNEDI' OR giorno='MARTEDI' OR giorno='MERCOLEDI' OR giorno='GIOVEDI' OR giorno='VENERDI'),
     ora     INT,
     stato VARCHAR(10) NOT NULL CHECK (stato='ATTIVA' OR stato='EFFETTUATA' OR stato='CANCELLATA'),
     CONSTRAINT f_preimp FOREIGN KEY (nome, cognome, corso) REFERENCES Imparte(nome, cognome, corso),
