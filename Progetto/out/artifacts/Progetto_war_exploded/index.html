@@ -15,7 +15,7 @@
     <p><label for="login"><b>Login: </b></label>
         <input type="text" v-model="account" required/></p>
     <p><label for="pass"><b>Password: </b></label>
-        <input type="password" v-model="pass" required></p
+        <input type="password" v-model="pass" required></p>
     <p><button v-on:click="enviare">OK</button></p>
     {{info}}
 </div>
@@ -34,7 +34,7 @@
         methods:{
             enviare:function(){
                 var self = this;
-                $.post(this.link, {utente: this.account , password: this.pass} , function(data) {
+                $.post(this.link, {azione: "connessione", utente: this.account , password: this.pass} , function(data) {
                     self.info = data;
                 });
             }
