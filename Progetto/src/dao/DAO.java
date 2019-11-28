@@ -17,6 +17,6 @@ public class DAO {
             System.out.println("Errore: " + e.getMessage());
         }
     }
-
+    //Implementar: Comprobación usuario, rol, 
 
 }
