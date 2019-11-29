@@ -17,6 +17,24 @@ public class Prenotazione {
         u = _u;
         stato = s;
     }
+    public int ora(){
+        return ora;
+    }
+    public String giorno(){
+        return giorno;
+    }
+    public Docente docente(){
+        return d;
+    }
+    public Corso corso(){
+        return c;
+    }
+    public Utente utente(){
+        return u;
+    }
+    public String stato(){
+        return stato;
+    }
 
 
 }

@@ -2,6 +2,7 @@ package dao;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.concurrent.CompletionException;
 
 public class DAO {
     private static final String url1 = "jdbc:mysql://localhost:3306/Ripetizione?" +
@@ -130,7 +131,7 @@ public class DAO {
             ResultSet p;
             while(rs.next()){
                 Docente d=new Docente(rs.getString("nome"), rs.getString("cognome"));
-                p=st.executeQuery("SELECT COUNT(*) FROM Prenotazione where nome='" +d.getNome()+"' and cognome='"+d.getCognome()+"' and giorno='"+g+"' and ora="+o+" and attiva=1;");
+                p=st.executeQuery("SELECT COUNT(*) FROM Prenotazione where nome='" +d.getNome()+"' and cognome='"+d.getCognome()+"' and giorno='"+g+"' and ora="+o+" and stato='ATTIVA';");
                 p.next();
                 if(p.getInt("COUNT(*)")==0){
                     ArrayList<Corso> c=new ArrayList<Corso>();
@@ -161,7 +162,24 @@ public class DAO {
 
     }
 
-    public 
+    public static void reservar(Prenotazione p){
+        Connection conn1= null;
+        try {
+            conn1 = DriverManager.getConnection(url1, user, password);
+            if (conn1 != null) {
+                System.out.println("Connected to the database ripetizioni");
+            }
+            Statement st = conn1.createStatement();
+            Utente u= p.utente();
+            Docente d=p.docente();
+            Corso c=p.corso();
+            st.executeUpdate("INSERT INTO `Prenotazione`(`usuario`, `nome`, `cognome`, `corso`, `giorno`, `ora`, `stato`) VALUES ('"+u.getUser()+"','"+d.getNome()+"','"+d.getCognome()+"','"+p.giorno()+"',"+p.ora()+",'"+p.stato()+"');");
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+
+        }
+    }
 
     public static ArrayList<Prenotazione> getPrenotazioni(String utente){
         Connection conn1 = null;
@@ -197,6 +215,73 @@ public class DAO {
         return out;
 
     }
+
+    public static void disidire(Prenotazione p){
+        Connection conn1= null;
+        try {
+            conn1 = DriverManager.getConnection(url1, user, password);
+            if (conn1 != null) {
+                System.out.println("Connected to the database ripetizioni");
+            }
+            Statement st = conn1.createStatement();
+            st.executeUpdate("UPDATE 'Prenotazione' where usuario='"+p.utente().getUser()+"' and ora="+p.ora()+" and giorno='"+p.giorno()+"' set 'stato'='CANCELLATA'");
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+
+        }
+
+    }
+    public static void effetuata(Prenotazione p){
+        Connection conn1= null;
+        try {
+            conn1 = DriverManager.getConnection(url1, user, password);
+            if (conn1 != null) {
+                System.out.println("Connected to the database ripetizioni");
+            }
+            Statement st = conn1.createStatement();
+            st.executeUpdate("UPDATE 'Prenotazione' where usuario='"+p.utente().getUser()+"' and ora="+p.ora()+" and giorno='"+p.giorno()+"' set 'stato'='EFFETTUATA'");
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+
+        }
+
+    }
+    public static ArrayList<Prenotazione> getTutttiPre(){
+        Connection conn1 = null;
+
+        ArrayList<Prenotazione> out = new ArrayList<>();
+
+        try {
+            conn1 = DriverManager.getConnection(url1, user, password);
+            if (conn1 != null) {
+                System.out.println("Connected to the database ripetizioni");
+            }
+            Statement st = conn1.createStatement();
+
+            ResultSet rs = st.executeQuery("SELECT * FROM Prenotazione ;");
+            while(rs.next()){
+                Utente u = new Utente(rs.getString("usuario"));
+                Docente d = new Docente(rs.getString("nome"),rs.getString("cognome"));
+                Corso c = new Corso(rs.getString("titulo"));
+                String g = rs.getString("giorno");
+                int ora = rs.getInt("ora");
+                String s = rs.getString("stato");
+
+                Prenotazione p = new Prenotazione(ora,g,d,c,u,s);
+
+                out.add(p);
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+
+        }
+
+        return out;
+    }
+
 
 }
 
