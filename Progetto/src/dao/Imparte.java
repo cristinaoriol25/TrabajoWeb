@@ -15,5 +15,8 @@ public class Imparte {
     public ArrayList<Corso> getCorso(){
         return corso;
     }
+    public void addCorso(Corso c){
+        corso.add(c);
+    }
 
 }
