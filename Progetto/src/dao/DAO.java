@@ -281,7 +281,85 @@ public class DAO {
 
         return out;
     }
+    
+    public static void eliminareDocente(Docente d) {
+        Connection conn1 = null;
+        try {
+            conn1 = DriverManager.getConnection(url1, user, password);
+            if (conn1 != null) {
+                System.out.println("Connected to the database ripetizioni");
+            }
+            Statement st = conn1.createStatement();
 
+            st.executeUpdate("UPDATE Docente SET attiva=0 WHERE nome='" + d.getNome() + "' AND cognome='" +  d.getCognome() + "';");
+            st.executeUpdate("UPDATE  Imparte SET attiva=0 WHERE nome='" + d.getNome() + "' AND cognome='" + d.getCognome() + "';");
+            st.executeUpdate("UPDATE  Prenotazione SET stato='CANCELLATA' WHERE nome='" + d.getNome() + "' AND cognome='" + d.getCognome() + "';");
+
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            if (conn1 != null) {
+                try {
+                    conn1.close();
+                } catch (SQLException e2) {
+                    System.out.println(e2.getMessage());
+                }
+            }
+        }
+    }
+
+    public static void eliminareCorso(Corso c) {
+        Connection conn1 = null;
+        try {
+            conn1 = DriverManager.getConnection(url1, user, password);
+            if (conn1 != null) {
+                System.out.println("Connected to the database ripetizioni");
+            }
+            Statement st = conn1.createStatement();
+
+            st.executeUpdate("UPDATE Corso SET attiva=0 WHERE titulo='" + c.getTitulo() + "';");
+            st.executeUpdate("UPDATE Imparte SET attiva=0 WHERE corso='" + c.getTitulo() + "';");
+            st.executeUpdate("UPDATE  Prenotazione SET stato='CANCELLATA' WHERE  corso='" + c.getTitulo() + "';");
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            if (conn1 != null) {
+                try {
+                    conn1.close();
+                } catch (SQLException e2) {
+                    System.out.println(e2.getMessage());
+                }
+            }
+        }
+    }
+
+    public static void eliminareImparte(Docente d, Corso c) {
+        Connection conn1 = null;
+        try {
+            conn1 = DriverManager.getConnection(url1, user, password);
+            if (conn1 != null) {
+                System.out.println("Connected to the database ripetizioni");
+            }
+            Statement st = conn1.createStatement();
+
+            st.executeUpdate("UPDATE Imparte SET attiva=0 WHERE corso='" + c.getTitulo() + "' AND nome='" + d.getNome() + "' AND cognome='" + d.getCognome() + "';");
+            st.executeUpdate("UPDATE Prenotazione SET stato='CANCELLATA' WHERE corso='" + c.getTitulo() + "' AND nome='" + d.getNome() + "' AND cognome='" + d.getCognome() + "';");
+
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            if (conn1 != null) {
+                try {
+                    conn1.close();
+                } catch (SQLException e2) {
+                    System.out.println(e2.getMessage());
+                }
+            }
+        }
+    }
 
 }
 
