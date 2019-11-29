@@ -9,15 +9,40 @@
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
-
-<h1>Login</h1>
 <div id="app">
     <div v-if="mostrareLog" id="login">
-    <p><label for="login"><b>Login: </b></label>
-        <input type="text" v-model="account" required/></p>
-    <p><label for="pass"><b>Password: </b></label>
-        <input type="password" v-model="pass" required></p>
-    <p><button v-on:click="enviare">OK</button></p>
+        <h1>Login</h1>
+        <p><label for="login"><b>Login: </b></label>
+            <input type="text" v-model="account" required/></p>
+        <p><label for="pass"><b>Password: </b></label>
+            <input type="password" v-model="pass" required></p>
+        <p><button v-on:click="enviare">OK</button></p>
+    </div>
+
+    <div v-if="mostrareElenPre" id="elencoPre">
+        <h2>I miei prenotazioni</h2>
+        <h3>Attivi:</h3>
+        <ul v-for="p in elencoPre">
+            <li v-if="{{p.stato}} == 'ATTIVA' ">
+                <li>{{p.ora}} {{p.giorno}} {{p.d}} {{p.c}}</li>
+            </v-if>
+        </ul>
+
+        <h3>Efettuati:</h3>
+        <ul v-for="p in elencoPre">
+            <li v-if="{{p.stato}} == 'EFETTUATA' ">
+            <li>{{p.ora}} {{p.giorno}} {{p.d}} {{p.c}}</li>
+            </v-if>
+        </ul>
+
+        <h3>Disdeti:</h3>
+        <ul v-for="p in elencoPre">
+            <li v-if="{{p.stato}} == 'CANCELATA' ">
+            <li>{{p.ora}} {{p.giorno}} {{p.d}} {{p.c}}</li>
+            </v-if>
+        </ul>
+
+
     </div>
     {{info}}
 </div>
@@ -28,14 +53,17 @@
     var app = new Vue ({
         el: '#app',
         data: {
-
             account : '',
             pass : '',
             link : '/Progetto/ServletController',
             info : '',
-            mostrareLog : '1'
+            mostrareLog : '1',
+            admin : '0',
+            elencoPre : '',
+            mostrareElenPre : '0'
 
         },
+
         methods:{
             enviare:function(){
                 var self = this;
@@ -44,6 +72,10 @@
                     self.mostrareLog = 0;
                 });
             }
+
+
+
+
         }
     });
 </script>

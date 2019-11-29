@@ -1,6 +1,7 @@
 package myServlet;
 
 import dao.*;
+import myBeans.JSONManager;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -13,14 +14,15 @@ import java.util.ArrayList;
 
 import static dao.DAO.*;
 
+
 @WebServlet(name = "ServletController", urlPatterns = {"/ServletController"})
 public class ServletController extends javax.servlet.http.HttpServlet {
 
 
-    private void mostrarePrenotazione(String account){
-
+    private String mostrarePrenotazione(String account,JSONManager JSONMan){
         ArrayList<Prenotazione> prenotazioni = getPrenotazioni(account);
 
+        return JSONMan.serializeJson(prenotazioni);
 
     }
 
@@ -28,7 +30,7 @@ public class ServletController extends javax.servlet.http.HttpServlet {
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try (PrintWriter out = response.getWriter()) {
-
+            JSONManager JSONMan = new JSONManager();
             String fun = request.getParameter("azione");
             if (fun.equals("connessione")) {
                 String account = request.getParameter("utente");
@@ -43,6 +45,10 @@ public class ServletController extends javax.servlet.http.HttpServlet {
                 else {
                     out.println("Usuario inexistente");
                 }
+            }
+            else if (fun.equals("elencoPre")){
+                String account = request.getParameter("utente");
+                out.println(mostrarePrenotazione(account,JSONMan));
             }
             else {
                     out.println("Accion inexistente");
