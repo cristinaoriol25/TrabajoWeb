@@ -1,5 +1,7 @@
 package myServlet;
 
+import dao.*;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -7,12 +9,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 
 import static dao.DAO.*;
 
 @WebServlet(name = "ServletController", urlPatterns = {"/ServletController"})
 public class ServletController extends javax.servlet.http.HttpServlet {
-    
+
+
+    private void mostrarePrenotazione(String account){
+
+        ArrayList<Prenotazione> prenotazioni = getPrenotazioni(account);
+
+
+    }
 
 
 

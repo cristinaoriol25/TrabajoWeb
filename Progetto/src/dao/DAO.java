@@ -163,6 +163,41 @@ public class DAO {
 
     public 
 
+    public static ArrayList<Prenotazione> getPrenotazioni(String utente){
+        Connection conn1 = null;
+
+        ArrayList<Prenotazione> out = new ArrayList<>();
+
+        try {
+            conn1 = DriverManager.getConnection(url1, user, password);
+            if (conn1 != null) {
+                System.out.println("Connected to the database ripetizioni");
+            }
+            Statement st = conn1.createStatement();
+
+            ResultSet rs = st.executeQuery("SELECT * FROM Prenotazione WHERE usuario='" + utente + "';");
+            while(rs.next()){
+                Utente u = new Utente(rs.getString("usuario"));
+                Docente d = new Docente(rs.getString("nome"),rs.getString("cognome"));
+                Corso c = new Corso(rs.getString("titulo"));
+                String g = rs.getString("giorno");
+                int ora = rs.getInt("ora");
+                String s = rs.getString("stato");
+
+                Prenotazione p = new Prenotazione(ora,g,d,c,u,s);
+
+                out.add(p);
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+
+        }
+
+        return out;
+
+    }
+
 }
 
 
