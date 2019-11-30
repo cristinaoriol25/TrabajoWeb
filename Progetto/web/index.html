@@ -28,28 +28,26 @@
         <h2>I miei prenotazioni</h2>
         <h3>Attivi:</h3>
         <ul>
-
             <li  v-for="p in attivi":key="p.stato">
-                {{p.ora}} {{p.giorno}} {{p.d.cognome}} {{p.d.nome}}  {{p.c.titulo}} {{p.stato}}</li>
+                {{p.ora}} {{p.giorno}} {{p.d.cognome}} {{p.d.nome}}  {{p.c.titulo}} </li>
         </ul>
 
         <h3>Efettuati:</h3>
         <ul>
-
             <li  v-for="p in efettuati":key="p.stato">
-            {{p.ora}} {{p.giorno}} {{p.d.cognome}} {{p.d.nome}}  {{p.c.titulo}} {{p.stato}}</li>
+            {{p.ora}} {{p.giorno}} {{p.d.cognome}} {{p.d.nome}}  {{p.c.titulo}} </li>
         </ul>
 
         <h3>Disdeti:</h3>
-        <ul >
+        <ul>
             <li  v-for="p in disdeti":key="p.stato">
-            {{p.ora}} {{p.giorno}} {{p.d.cognome}} {{p.d.nome}}  {{p.c.titulo}} {{p.stato}}</li>
+            {{p.ora}} {{p.giorno}} {{p.d.cognome}} {{p.d.nome}}  {{p.c.titulo}} </li>
         </ul>
 
 
     </div>
     <div v-if="erroreConn" >
-        Utente o password sbagliato.
+        <!--Utente o password sbagliato. -->
     </div>
 </div>
 
@@ -64,7 +62,7 @@
 
             mostrareLog : true,
             admin : false,
-            elencoPre : '',
+            elencoPre : [],
             mostrareElenPre : false,
             erroreConn : false
 
@@ -125,16 +123,6 @@
         }
     });
 </script>
-
-
-
-
-
-
-
-
-
-
 
 
 </body>

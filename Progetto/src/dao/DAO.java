@@ -170,10 +170,10 @@ public class DAO {
                 System.out.println("Connected to the database ripetizioni");
             }
             Statement st = conn1.createStatement();
-            Utente u= p.utente();
-            Docente d=p.docente();
-            Corso c=p.corso();
-            st.executeUpdate("INSERT INTO `Prenotazione`(`usuario`, `nome`, `cognome`, `corso`, `giorno`, `ora`, `stato`) VALUES ('"+u.getUser()+"','"+d.getNome()+"','"+d.getCognome()+"','"+p.giorno()+"',"+p.ora()+",'"+p.stato()+"');");
+            Utente u = p.getU();
+            Docente d = p.getD();
+            Corso c = p.getC();
+            st.executeUpdate("INSERT INTO `Prenotazione`(`usuario`, `nome`, `cognome`, `corso`, `giorno`, `ora`, `stato`) VALUES ('"+u.getUser()+"','"+d.getNome()+"','"+d.getCognome()+"','"+p.getGiorno()+"',"+p.getOra()+",'"+p.getStato()+"');");
 
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -259,7 +259,7 @@ public class DAO {
                 System.out.println("Connected to the database ripetizioni");
             }
             Statement st = conn1.createStatement();
-            st.executeUpdate("UPDATE 'Prenotazione' where usuario='"+p.utente().getUser()+"' and ora="+p.ora()+" and giorno='"+p.giorno()+"' set 'stato'='CANCELLATA'");
+            st.executeUpdate("UPDATE 'Prenotazione' where usuario='"+p.getU().getUser()+"' and ora="+p.getOra()+" and giorno='"+p.getGiorno()+"' set 'stato'='CANCELLATA'");
 
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -275,7 +275,7 @@ public class DAO {
                 System.out.println("Connected to the database ripetizioni");
             }
             Statement st = conn1.createStatement();
-            st.executeUpdate("UPDATE 'Prenotazione' where usuario='"+p.utente().getUser()+"' and ora="+p.ora()+" and giorno='"+p.giorno()+"' set 'stato'='EFFETTUATA'");
+            st.executeUpdate("UPDATE 'Prenotazione' where usuario='"+p.getU().getUser()+"' and ora="+p.getOra()+" and giorno='"+p.getGiorno()+"' set 'stato'='EFFETTUATA'");
 
         } catch (SQLException e) {
             System.out.println(e.getMessage());

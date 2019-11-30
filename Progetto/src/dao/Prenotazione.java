@@ -2,10 +2,10 @@ package dao;
 
 
 public class Prenotazione {
-    public int ora;
-    public String giorno;
-    public Docente d;
-    public Corso c;
+    private int ora;
+    private String giorno;
+    private Docente d;
+    private Corso c;
     public Utente u;
     public String stato;
 
@@ -18,22 +18,16 @@ public class Prenotazione {
         u = _u;
         stato = s;
     }
-    public int ora(){
-        return ora;
-    }
-    public String giorno(){
+    public int getOra(){ return ora; }
+    public String getGiorno(){
         return giorno;
     }
-    public Docente docente(){
+    public Docente getD(){
         return d;
     }
-    public Corso corso(){
-        return c;
-    }
-    public Utente utente(){
-        return u;
-    }
-    public String stato(){
+    public Corso getC(){ return c; }
+    public Utente getU(){ return u; }
+    public String getStato(){
         return stato;
     }
 
