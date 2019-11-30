@@ -22,6 +22,10 @@ public class ServletController extends javax.servlet.http.HttpServlet {
     private String mostrarePrenotazione(String account,JSONManager JSONMan){
         ArrayList<Prenotazione> prenotazioni = getPrenotazioni(account);
 
+        for (Prenotazione p : prenotazioni){
+            System.out.println();
+        }
+
         return JSONMan.serializeJson(prenotazioni);
 
     }
@@ -29,6 +33,7 @@ public class ServletController extends javax.servlet.http.HttpServlet {
 
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("application/json");
         try (PrintWriter out = response.getWriter()) {
             JSONManager JSONMan = new JSONManager();
             String fun = request.getParameter("azione");
@@ -37,13 +42,13 @@ public class ServletController extends javax.servlet.http.HttpServlet {
                 String pass = request.getParameter("password");
                 if (correctlog(account,pass)) {
                     if (getRuolo(account)) {
-                        out.println("Hola admin");
+                        out.println(JSONMan.serializeJson("ad"));
                     } else {
-                        out.println("Hola usuario");
+                        out.println(JSONMan.serializeJson("a"));
                     }
                 }
                 else {
-                    out.println("Usuario inexistente");
+                    out.println(JSONMan.serializeJson("f"));
                 }
             }
             else if (fun.equals("elencoPre")){

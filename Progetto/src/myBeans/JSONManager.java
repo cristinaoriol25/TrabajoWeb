@@ -4,6 +4,7 @@ import javax.json.stream.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.annotation.*;
 
 import java.io.IOException;
 
@@ -14,6 +15,7 @@ public class JSONManager {
     // Traduzione da stringa JSON a oggetto Java di tipo generico T
     public <T> T parseJson(String json, Class<T> targetType) throws Exception {
         objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
+        //objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
         return objectMapper.readValue(json, targetType);
     }
 

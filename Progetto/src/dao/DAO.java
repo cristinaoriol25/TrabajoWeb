@@ -162,7 +162,7 @@ public class DAO {
 
     }
 
-    public static void reservar(Prenotazione p){
+    public static void prenotare(Prenotazione p){
         Connection conn1= null;
         try {
             conn1 = DriverManager.getConnection(url1, user, password);
@@ -181,6 +181,42 @@ public class DAO {
         }
     }
 
+    public static ArrayList<Prenotazione> getPrenotazioni(){
+        Connection conn1 = null;
+
+        ArrayList<Prenotazione> out = new ArrayList<>();
+
+        try {
+            conn1 = DriverManager.getConnection(url1, user, password);
+            if (conn1 != null) {
+                System.out.println("Connected to the database ripetizioni");
+            }
+            Statement st = conn1.createStatement();
+
+            ResultSet rs = st.executeQuery("SELECT * FROM Prenotazione ;");
+            while(rs.next()){
+                Utente u = new Utente(rs.getString("usuario"));
+                Docente d = new Docente(rs.getString("nome"),rs.getString("cognome"));
+                Corso c = new Corso(rs.getString("titulo"));
+                String g = rs.getString("giorno");
+                int ora = rs.getInt("ora");
+                String s = rs.getString("stato");
+
+                Prenotazione p = new Prenotazione(ora,g,d,c,u,s);
+
+                out.add(p);
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+
+        }
+
+        return out;
+    }
+
+
+
     public static ArrayList<Prenotazione> getPrenotazioni(String utente){
         Connection conn1 = null;
 
@@ -197,11 +233,10 @@ public class DAO {
             while(rs.next()){
                 Utente u = new Utente(rs.getString("usuario"));
                 Docente d = new Docente(rs.getString("nome"),rs.getString("cognome"));
-                Corso c = new Corso(rs.getString("titulo"));
+                Corso c = new Corso(rs.getString("corso"));
                 String g = rs.getString("giorno");
                 int ora = rs.getInt("ora");
                 String s = rs.getString("stato");
-
                 Prenotazione p = new Prenotazione(ora,g,d,c,u,s);
 
                 out.add(p);
@@ -248,39 +283,7 @@ public class DAO {
         }
 
     }
-    public static ArrayList<Prenotazione> getTutttiPre(){
-        Connection conn1 = null;
 
-        ArrayList<Prenotazione> out = new ArrayList<>();
-
-        try {
-            conn1 = DriverManager.getConnection(url1, user, password);
-            if (conn1 != null) {
-                System.out.println("Connected to the database ripetizioni");
-            }
-            Statement st = conn1.createStatement();
-
-            ResultSet rs = st.executeQuery("SELECT * FROM Prenotazione ;");
-            while(rs.next()){
-                Utente u = new Utente(rs.getString("usuario"));
-                Docente d = new Docente(rs.getString("nome"),rs.getString("cognome"));
-                Corso c = new Corso(rs.getString("titulo"));
-                String g = rs.getString("giorno");
-                int ora = rs.getInt("ora");
-                String s = rs.getString("stato");
-
-                Prenotazione p = new Prenotazione(ora,g,d,c,u,s);
-
-                out.add(p);
-            }
-
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-
-        }
-
-        return out;
-    }
     
     public static void eliminareDocente(Docente d) {
         Connection conn1 = null;

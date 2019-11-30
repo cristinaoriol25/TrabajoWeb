@@ -3,14 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <title>home</title>
+    <meta http-equiv="Cache-Control" content="no-store" />
 </head>
 <body>
 
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
+
+
+
+
 <div id="app">
-    <div v-if="mostrareLog" id="login">
+    <div v-if="mostrareLog">
         <h1>Login</h1>
         <p><label for="login"><b>Login: </b></label>
             <input type="text" v-model="account" required/></p>
@@ -19,34 +24,34 @@
         <p><button v-on:click="enviare">OK</button></p>
     </div>
 
-    <div v-if="mostrareElenPre" id="elencoPre">
+    <div v-if="mostrareElenPre" >
         <h2>I miei prenotazioni</h2>
         <h3>Attivi:</h3>
-        <ul v-for="p in elencoPre">
-            <li v-if="{{p.stato}} == 'ATTIVA' ">
-                <li>{{p.ora}} {{p.giorno}} {{p.d}} {{p.c}}</li>
-            </v-if>
+        <ul>
+
+            <li  v-for="p in attivi":key="p.stato">
+                {{p.ora}} {{p.giorno}} {{p.d.cognome}} {{p.d.nome}}  {{p.c.titulo}} {{p.stato}}</li>
         </ul>
 
         <h3>Efettuati:</h3>
-        <ul v-for="p in elencoPre">
-            <li v-if="{{p.stato}} == 'EFETTUATA' ">
-            <li>{{p.ora}} {{p.giorno}} {{p.d}} {{p.c}}</li>
-            </v-if>
+        <ul>
+
+            <li  v-for="p in efettuati":key="p.stato">
+            {{p.ora}} {{p.giorno}} {{p.d.cognome}} {{p.d.nome}}  {{p.c.titulo}} {{p.stato}}</li>
         </ul>
 
         <h3>Disdeti:</h3>
-        <ul v-for="p in elencoPre">
-            <li v-if="{{p.stato}} == 'CANCELATA' ">
-            <li>{{p.ora}} {{p.giorno}} {{p.d}} {{p.c}}</li>
-            </v-if>
+        <ul >
+            <li  v-for="p in disdeti":key="p.stato">
+            {{p.ora}} {{p.giorno}} {{p.d.cognome}} {{p.d.nome}}  {{p.c.titulo}} {{p.stato}}</li>
         </ul>
 
 
     </div>
-    {{info}}
+    <div v-if="erroreConn" >
+        Utente o password sbagliato.
+    </div>
 </div>
-
 
 
 <script>
@@ -56,20 +61,61 @@
             account : '',
             pass : '',
             link : '/Progetto/ServletController',
-            info : '',
-            mostrareLog : '1',
-            admin : '0',
+
+            mostrareLog : true,
+            admin : false,
             elencoPre : '',
-            mostrareElenPre : '0'
+            mostrareElenPre : false,
+            erroreConn : false
 
         },
-
+        computed:{
+            attivi: function() {
+                return this.elencoPre.filter(function(item) {
+                    return item.stato == "ATTIVA";
+                })
+            },
+            efettuati: function() {
+                return this.elencoPre.filter(function(item) {
+                    return item.stato == "EFETTUATA";
+                })
+            },
+            disdeti: function() {
+                return this.elencoPre.filter(function(item) {
+                    return item.stato == "CANCELATA";
+                })
+            }
+        },
         methods:{
+            getPrenotazioni:function() {
+                var self = this;
+                $.post(this.link, {azione: "elencoPre", utente: this.account}, function (data) {
+                    self.elencoPre = data;
+                });
+            },
+
+
             enviare:function(){
                 var self = this;
                 $.post(this.link, {azione: "connessione", utente: this.account , password: this.pass} , function(data) {
-                    self.info = data;
-                    self.mostrareLog = 0;
+                    console.log(data);
+                    switch(data){
+                        case "a":
+                            console.log("entra aqui");
+                            self.mostrareLog = false;
+                            self.getPrenotazioni();
+                            console.log(self.elencoPre);
+
+                            self.mostrareElenPre = true;
+                        case "ad":
+                            self.admin = true;
+                            self.mostrareLog = false;
+                            self.getPrenotazioni();
+                            self.mostrareElenPre = true;
+                        case "f":
+                            self.erroreConn = true;
+                    }
+
                 });
             }
 
@@ -79,6 +125,7 @@
         }
     });
 </script>
+
 
 
 

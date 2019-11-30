@@ -1,12 +1,13 @@
 package dao;
 
+
 public class Prenotazione {
-    private int ora;
-    private String giorno;
-    private Docente d;
-    private Corso c;
-    private Utente u;
-    private String stato;
+    public int ora;
+    public String giorno;
+    public Docente d;
+    public Corso c;
+    public Utente u;
+    public String stato;
 
 
     Prenotazione(int o, String g, Docente _d, Corso _c, Utente _u, String s){
@@ -36,5 +37,8 @@ public class Prenotazione {
         return stato;
     }
 
-
+    @Override
+    public String toString() {
+        return ora+" " +giorno + "-" + c.getTitulo()+"-" + d.getCognome()+","+ d.getNome() +"-" +stato;
+    }
 }
