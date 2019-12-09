@@ -28,31 +28,38 @@
         <h2>I miei prenotazioni</h2>
         <h3>Attivi:</h3>
         <ul>
-
             <li  v-for="p in attivi":key="p.stato">
-                {{p.ora}} {{p.giorno}} {{p.d.cognome}} {{p.d.nome}}  {{p.c.titulo}} {{p.stato}}</li>
+                {{p.ora}} {{p.giorno}} {{p.d.cognome}} {{p.d.nome}}  {{p.c.titulo}} </li>
         </ul>
 
         <h3>Efettuati:</h3>
         <ul>
-
             <li  v-for="p in efettuati":key="p.stato">
-            {{p.ora}} {{p.giorno}} {{p.d.cognome}} {{p.d.nome}}  {{p.c.titulo}} {{p.stato}}</li>
+            {{p.ora}} {{p.giorno}} {{p.d.cognome}} {{p.d.nome}}  {{p.c.titulo}} </li>
         </ul>
 
         <h3>Disdeti:</h3>
-        <ul >
+        <ul>
             <li  v-for="p in disdeti":key="p.stato">
-            {{p.ora}} {{p.giorno}} {{p.d.cognome}} {{p.d.nome}}  {{p.c.titulo}} {{p.stato}}</li>
+            {{p.ora}} {{p.giorno}} {{p.d.cognome}} {{p.d.nome}}  {{p.c.titulo}} </li>
         </ul>
 
 
     </div>
     <div v-if="erroreConn" >
-        <!--Utente o password sbagliato. -->
+        Utente o password sbagliato.
     </div>
-</div>
 
+    <div v-if="admin">
+        <h2>Impostazioni </h2>
+        <h3>Inserire docente</h3>
+        <input type="text" v-model="nome" required/></p>
+        <input type="text" v-model="cognome" required/></p>
+        <p><button v-on:click="nuovoDoc">Submit</button></p>
+
+    </div>
+
+</div>
 
 <script>
     var app = new Vue ({
@@ -66,7 +73,9 @@
             admin : false,
             elencoPre : [],
             mostrareElenPre : false,
-            erroreConn : false
+            erroreConn : false,
+            nome : "",
+            cognome : ""
 
         },
         computed:{
@@ -94,27 +103,39 @@
                 });
             },
 
+            nuovoDoc:function(){
+                var self = this;
+                $.post(this.link, {azione: "nuovoDoc", nome: this.nome , cognome: this.cognome} , function(data) {
+                    // mensaje de OK
+                });
+            },
 
             enviare:function(){
                 var self = this;
                 $.post(this.link, {azione: "connessione", utente: this.account , password: this.pass} , function(data) {
-                    console.log(data);
                     switch(data){
                         case "a":
-                            console.log("entra aqui");
+                            self.admin = false;
+                            self.erroreConn = false;
                             self.mostrareLog = false;
                             self.getPrenotazioni();
-                            console.log(self.elencoPre);
-
                             self.mostrareElenPre = true;
+                            break;
                         case "ad":
                             self.admin = true;
                             self.mostrareLog = false;
+                            self.erroreConn = false;
                             self.getPrenotazioni();
                             self.mostrareElenPre = true;
+                            break;
+
                         case "f":
                             self.erroreConn = true;
+                            break;
+
+
                     }
+                    console.log(self.erroreConn);
 
                 });
             }
@@ -125,16 +146,6 @@
         }
     });
 </script>
-
-
-
-
-
-
-
-
-
-
 
 
 </body>

@@ -20,7 +20,11 @@ public class ServletController extends javax.servlet.http.HttpServlet {
 
 
     private String mostrarePrenotazione(String account,JSONManager JSONMan){
-        ArrayList<Prenotazione> prenotazioni = getPrenotazioni(account);
+        ArrayList<Prenotazione> prenotazioni;
+        if (account == "admin")
+            prenotazioni = getPrenotazioni();
+        else
+            prenotazioni = getPrenotazioni(account);
 
         for (Prenotazione p : prenotazioni){
             System.out.println();

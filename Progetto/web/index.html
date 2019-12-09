@@ -47,7 +47,7 @@
 
     </div>
     <div v-if="erroreConn" >
-        <!--Utente o password sbagliato. -->
+        Utente o password sbagliato.
     </div>
 
     <div v-if="admin">
@@ -113,23 +113,29 @@
             enviare:function(){
                 var self = this;
                 $.post(this.link, {azione: "connessione", utente: this.account , password: this.pass} , function(data) {
-                    console.log(data);
                     switch(data){
                         case "a":
-                            console.log("entra aqui");
+                            self.admin = false;
+                            self.erroreConn = false;
                             self.mostrareLog = false;
                             self.getPrenotazioni();
-                            console.log(self.elencoPre);
-
                             self.mostrareElenPre = true;
+                            break;
                         case "ad":
                             self.admin = true;
                             self.mostrareLog = false;
+                            self.erroreConn = false;
                             self.getPrenotazioni();
                             self.mostrareElenPre = true;
+                            break;
+
                         case "f":
                             self.erroreConn = true;
+                            break;
+
+
                     }
+                    console.log(self.erroreConn);
 
                 });
             }
