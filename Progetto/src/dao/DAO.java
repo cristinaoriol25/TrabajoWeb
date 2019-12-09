@@ -117,6 +117,32 @@ public class DAO {
         }
     }
 
+    public static void creare(Docente d, Corso c) {
+        Connection conn1 = null;
+        try {
+            conn1 = DriverManager.getConnection(url1, user, password);
+            if (conn1 != null) {
+                System.out.println("Connected to the database ripetizioni");
+            }
+            Statement st = conn1.createStatement();
+
+            st.executeUpdate("INSERT INTO Imparte (`nome`, `cognome`, `titulo`, `attiva`) VALUES ('" + d.getNome() + "', '" + d.getCognome() +
+                    "', '" + c.getTitulo() + "', 1);");
+
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            if (conn1 != null) {
+                try {
+                    conn1.close();
+                } catch (SQLException e2) {
+                    System.out.println(e2.getMessage());
+                }
+            }
+        }
+    }
+
     public static Celda oraLibera(String g, int o){
         Connection conn1 = null;
         ArrayList<Imparte> lib= new ArrayList<Imparte>();
@@ -230,8 +256,8 @@ public class DAO {
             Statement st = conn1.createStatement();
 
             ResultSet rs = st.executeQuery("SELECT * FROM Prenotazione WHERE usuario='" + utente + "';");
+            Utente u = new Utente(rs.getString("usuario"));
             while(rs.next()){
-                Utente u = new Utente(rs.getString("usuario"));
                 Docente d = new Docente(rs.getString("nome"),rs.getString("cognome"));
                 Corso c = new Corso(rs.getString("corso"));
                 String g = rs.getString("giorno");
