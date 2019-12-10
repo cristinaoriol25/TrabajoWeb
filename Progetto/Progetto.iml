@@ -23,5 +23,6 @@
     <orderEntry type="library" name="servlet-api" level="project" />
     <orderEntry type="library" name="servlet-api" level="application" />
     <orderEntry type="library" name="mysql-connector-java-5.1.44-bin" level="application" />
+    <orderEntry type="library" name="JACKSON library2" level="application" />
   </component>
 </module>

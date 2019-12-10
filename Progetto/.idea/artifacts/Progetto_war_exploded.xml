@@ -9,6 +9,7 @@
         </element>
         <element id="directory" name="lib">
           <element id="library" level="application" name="mysql-connector-java-5.1.44-bin" />
+          <element id="library" level="application" name="JACKSON library2" />
         </element>
       </element>
     </root>

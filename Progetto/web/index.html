@@ -53,9 +53,15 @@
     <div v-if="admin">
         <h2>Impostazioni </h2>
         <h3>Inserire docente</h3>
-        <input type="text" v-model="nome" required/></p>
-        <input type="text" v-model="cognome" required/></p>
+        <p><label for="nome"><b>Nome: </b></label>
+            <input type="text" v-model="nome" required/></p>
+        <p><label for="cognome"><b>Cognome: </b></label>
+            <input type="text" v-model="cognome" required/></p>
         <p><button v-on:click="nuovoDoc">Submit</button></p>
+        <h3>Inserire corso</h3>
+        <p><label for="corso"><b>Corso: </b></label>
+            <input type="text" v-model="corso" required/></p>
+        <p><button v-on:click="nuovoCor">Submit</button></p>
 
     </div>
 
@@ -75,7 +81,8 @@
             mostrareElenPre : false,
             erroreConn : false,
             nome : "",
-            cognome : ""
+            cognome : "",
+            corso : ""
 
         },
         computed:{
@@ -105,9 +112,21 @@
 
             nuovoDoc:function(){
                 var self = this;
+                console.log("nuevoDoc");
                 $.post(this.link, {azione: "nuovoDoc", nome: this.nome , cognome: this.cognome} , function(data) {
                     // mensaje de OK
                 });
+                alert("Docente inserito");
+
+            },
+            nuovoCor:function(){
+                var self = this;
+                console.log("nuevoDoc");
+                $.post(this.link, {azione: "nuovoCor", corso: this.corso} , function(data) {
+                    // mensaje de OK
+                });
+                alert("Corso inserito");
+
             },
 
             enviare:function(){

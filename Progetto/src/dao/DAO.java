@@ -285,7 +285,7 @@ public class DAO {
     }
 
     
-    public static void eliminareDocente(Docente d) {
+    public static void eliminare(Docente d) {
         Connection conn1 = null;
         try {
             conn1 = DriverManager.getConnection(url1, user, password);
@@ -297,6 +297,7 @@ public class DAO {
             st.executeUpdate("UPDATE Docente SET attiva=0 WHERE nome='" + d.getNome() + "' AND cognome='" +  d.getCognome() + "';");
             st.executeUpdate("UPDATE  Imparte SET attiva=0 WHERE nome='" + d.getNome() + "' AND cognome='" + d.getCognome() + "';");
             st.executeUpdate("UPDATE  Prenotazione SET stato='CANCELLATA' WHERE nome='" + d.getNome() + "' AND cognome='" + d.getCognome() + "';");
+            st.executeUpdate("UPDATE  Imparte SET attiva=0 WHERE nome='" + d.getNome() + "' AND cognome='" + d.getCognome() + "';");
 
 
         } catch (SQLException e) {
@@ -312,7 +313,7 @@ public class DAO {
         }
     }
 
-    public static void eliminareCorso(Corso c) {
+    public static void eliminare(Corso c) {
         Connection conn1 = null;
         try {
             conn1 = DriverManager.getConnection(url1, user, password);
@@ -324,6 +325,8 @@ public class DAO {
             st.executeUpdate("UPDATE Corso SET attiva=0 WHERE titulo='" + c.getTitulo() + "';");
             st.executeUpdate("UPDATE Imparte SET attiva=0 WHERE corso='" + c.getTitulo() + "';");
             st.executeUpdate("UPDATE  Prenotazione SET stato='CANCELLATA' WHERE  corso='" + c.getTitulo() + "';");
+            st.executeUpdate("UPDATE  Imparte SET attiva=0 WHERE  corso='" + c.getTitulo() + "';");
+
 
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -362,6 +365,67 @@ public class DAO {
                 }
             }
         }
+    }
+
+    public static ArrayList<Docente> mostrareDoc(){
+        Connection conn1 = null;
+        ArrayList<Docente> d=new ArrayList<Docente>();
+        try {
+            conn1 = DriverManager.getConnection(url1, user, password);
+            if (conn1 != null) {
+                System.out.println("Connected to the database ripetizioni");
+            }
+            Statement st = conn1.createStatement();
+            ResultSet rs = st.executeQuery("SELECT * FROM Docente ;");
+            while (rs.next()){
+                Docente doc=new Docente(rs.getString("nome"), rs.getString("cognome"));
+                d.add(doc);
+            }
+
+
+
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            if (conn1 != null) {
+                try {
+                    conn1.close();
+                } catch (SQLException e2) {
+                    System.out.println(e2.getMessage());
+                }
+            }
+        }
+        return d;
+    }
+
+    public static ArrayList<Corso> mostrareCor(){
+        Connection conn1 = null;
+        ArrayList<Corso> c=new ArrayList<Corso>();
+        try {
+            conn1 = DriverManager.getConnection(url1, user, password);
+            if (conn1 != null) {
+                System.out.println("Connected to the database ripetizioni");
+            }
+            Statement st = conn1.createStatement();
+            ResultSet rs = st.executeQuery("SELECT * FROM Corso ;");
+            while (rs.next()){
+                Corso cor=new Corso(rs.getString("titulo"));
+                c.add(cor);
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            if (conn1 != null) {
+                try {
+                    conn1.close();
+                } catch (SQLException e2) {
+                    System.out.println(e2.getMessage());
+                }
+            }
+        }
+        return c;
     }
 
 }

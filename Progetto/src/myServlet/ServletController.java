@@ -34,6 +34,16 @@ public class ServletController extends javax.servlet.http.HttpServlet {
 
     }
 
+    private void creareDoc(String nome, String cognome, JSONManager JSONMan){
+        Docente doc = new Docente(nome, cognome);
+        creare(doc);
+
+    }
+    private void creareCorso(String corso){
+        Corso c = new Corso(corso);
+        creare(c);
+    }
+
 
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -58,6 +68,19 @@ public class ServletController extends javax.servlet.http.HttpServlet {
             else if (fun.equals("elencoPre")){
                 String account = request.getParameter("utente");
                 out.println(mostrarePrenotazione(account,JSONMan));
+            }
+            else if(fun.equals("nuovoDoc")){
+                String nom = request.getParameter("nome");
+                String cog = request.getParameter("cognome");
+                creareDoc(nom,cog,JSONMan);
+
+
+            }
+            else if(fun.equals("nuovoCor")){
+                String cor = request.getParameter("corso");
+                creareCorso(cor);
+
+
             }
             else {
                     out.println("Accion inexistente");
