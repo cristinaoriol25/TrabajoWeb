@@ -58,6 +58,23 @@
         <p><label for="cognome"><b>Cognome: </b></label>
             <input type="text" v-model="cognome" required/></p>
         <p><button v-on:click="nuovoDoc">Submit</button></p>
+
+        <h3>Elenco di docenti.</h3>
+
+
+        <table>
+            <tr>
+                <th>Cognome</th>
+                <th>Nome</th>
+                <th>Rimuoveri</th>
+            </tr>
+            <tr v-for="d in elencoDoc">
+                <td>{{d.cognome}}</td>
+                <td>{{d.nome}}</td>
+                <td><button v-on:click="rimDoc(d)">X</button></td>
+            </tr>
+        </table>
+
         <h3>Inserire corso</h3>
         <p><label for="corso"><b>Corso: </b></label>
             <input type="text" v-model="corso" required/></p>
@@ -80,9 +97,10 @@
             elencoPre : [],
             mostrareElenPre : false,
             erroreConn : false,
-            nome : "",
-            cognome : "",
-            corso : ""
+            nome : '',
+            cognome : '',
+            corso : '',
+            elencoDoc : []
 
         },
         computed:{
@@ -98,11 +116,17 @@
             },
             disdeti: function() {
                 return this.elencoPre.filter(function(item) {
-                    return item.stato == "CANCELATA";
+                    return item.stato == "CANCELLATA";
                 })
             }
         },
         methods:{
+            getDocenti:function() {
+                var self = this;
+                $.post(this.link, {azione: "elencoDoc", utente: this.account}, function (data) {
+                    self.elencoDoc = data;
+                });
+            },
             getPrenotazioni:function() {
                 var self = this;
                 $.post(this.link, {azione: "elencoPre", utente: this.account}, function (data) {
@@ -110,23 +134,35 @@
                 });
             },
 
+
             nuovoDoc:function(){
                 var self = this;
-                console.log("nuevoDoc");
                 $.post(this.link, {azione: "nuovoDoc", nome: this.nome , cognome: this.cognome} , function(data) {
-                    // mensaje de OK
+                    alert( self.nome + " "+ self.cognome +" ha stato inserito.");
+                    self.nome = '';
+                    self.cognome = '';
+                    self.elencoDoc.push(JSON.parse(data));
                 });
-                alert("Docente inserito");
 
             },
+
+            rimDoc:function(d){
+                var self = this;
+                $.post(this.link, {azione: "rimDoc", nome: d.nome , cognome: d.cognome} , function(data) {
+
+                });
+                alert( d.nome  + " "+ d.cognome +" ha stato rimosso.");
+                self.elencoDoc = self.elencoDoc.filter( el => el !== d );
+
+
+            },
+
             nuovoCor:function(){
                 var self = this;
                 console.log("nuevoDoc");
                 $.post(this.link, {azione: "nuovoCor", corso: this.corso} , function(data) {
-                    // mensaje de OK
+                    alert( "Il corso " + self.corso + " ha stato inserito.");
                 });
-                alert("Corso inserito");
-
             },
 
             enviare:function(){
@@ -141,6 +177,7 @@
                             self.mostrareElenPre = true;
                             break;
                         case "ad":
+                            self.getDocenti();
                             self.admin = true;
                             self.mostrareLog = false;
                             self.erroreConn = false;

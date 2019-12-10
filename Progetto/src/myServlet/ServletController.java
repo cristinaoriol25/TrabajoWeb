@@ -34,15 +34,23 @@ public class ServletController extends javax.servlet.http.HttpServlet {
 
     }
 
-    private void creareDoc(String nome, String cognome, JSONManager JSONMan){
+    private String creareDoc(String nome, String cognome, JSONManager JSONMan){
         Docente doc = new Docente(nome, cognome);
         creare(doc);
-
+        return JSONMan.serializeJson(doc);
     }
     private void creareCorso(String corso){
         Corso c = new Corso(corso);
         creare(c);
     }
+
+    private void rimuovereDoc(String nome, String cognome, JSONManager JSONMan){
+        System.out.println(nome + " " + cognome);
+        Docente doc = new Docente(nome, cognome);
+        eliminare(doc);
+    }
+
+
 
 
 
@@ -69,12 +77,18 @@ public class ServletController extends javax.servlet.http.HttpServlet {
                 String account = request.getParameter("utente");
                 out.println(mostrarePrenotazione(account,JSONMan));
             }
+            else if (fun.equals("elencoDoc")){
+                out.println(JSONMan.serializeJson(mostrareDoc()));
+            }
             else if(fun.equals("nuovoDoc")){
                 String nom = request.getParameter("nome");
                 String cog = request.getParameter("cognome");
-                creareDoc(nom,cog,JSONMan);
-
-
+                out.println(JSONMan.serializeJson(creareDoc(nom,cog,JSONMan)));
+            }
+            else if(fun.equals("rimDoc")){
+                String nom = request.getParameter("nome");
+                String cog = request.getParameter("cognome");
+                rimuovereDoc(nom,cog,JSONMan);
             }
             else if(fun.equals("nuovoCor")){
                 String cor = request.getParameter("corso");

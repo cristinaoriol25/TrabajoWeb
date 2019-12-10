@@ -376,7 +376,7 @@ public class DAO {
                 System.out.println("Connected to the database ripetizioni");
             }
             Statement st = conn1.createStatement();
-            ResultSet rs = st.executeQuery("SELECT * FROM Docente ;");
+            ResultSet rs = st.executeQuery("SELECT * FROM Docente WHERE attiva=1;");
             while (rs.next()){
                 Docente doc=new Docente(rs.getString("nome"), rs.getString("cognome"));
                 d.add(doc);
@@ -408,7 +408,7 @@ public class DAO {
                 System.out.println("Connected to the database ripetizioni");
             }
             Statement st = conn1.createStatement();
-            ResultSet rs = st.executeQuery("SELECT * FROM Corso ;");
+            ResultSet rs = st.executeQuery("SELECT * FROM Corso WHERE attiva=1;");
             while (rs.next()){
                 Corso cor=new Corso(rs.getString("titulo"));
                 c.add(cor);
