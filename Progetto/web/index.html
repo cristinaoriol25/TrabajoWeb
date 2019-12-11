@@ -53,10 +53,22 @@
     <div v-if="admin">
         <h2>Impostazioni </h2>
         <h3>Inserire docente</h3>
+        <!--<form action="/index.html">
+            Nome: <input type="text" v-model="nome" required/></p>
+            <br>
+            Cognome: <input type="text" v-model="cognome" required/></p>
+            <br>
+            <button v-on:click="nuovoDoc">Submit</button>
+        </form>-->
+
         <p><label for="nome"><b>Nome: </b></label>
-            <input type="text" v-model="nome" required/></p>
+            <input type="text" v-model="nome"/>
+            <label for="eNome" v-if="erroreDocNome"> Campo vuoto </label>
+        </p>
         <p><label for="cognome"><b>Cognome: </b></label>
-            <input type="text" v-model="cognome" required/></p>
+            <input type="text" v-model="cognome"/>
+            <label for="eCog" v-if="erroreDocCog"> Campo vuoto </label>
+        </p>
         <p><button v-on:click="nuovoDoc">Submit</button></p>
 
         <h3>Elenco di docenti.</h3>
@@ -77,7 +89,9 @@
 
         <h3>Inserire corso</h3>
         <p><label for="corso"><b>Corso: </b></label>
-            <input type="text" v-model="corso" required/></p>
+            <input type="text" v-model="corso"/>
+            <label for="eCorso" v-if="erroreCorso"> Campo vuoto </label>
+        </p>
         <p><button v-on:click="nuovoCor">Submit</button></p>
 
     </div>
@@ -97,9 +111,12 @@
             elencoPre : [],
             mostrareElenPre : false,
             erroreConn : false,
+            erroreDocNome : false,
+            erroreDocCog : false,
             nome : '',
             cognome : '',
             corso : '',
+            erroreCorso : false,
             elencoDoc : []
 
         },
@@ -137,12 +154,16 @@
 
             nuovoDoc:function(){
                 var self = this;
-                $.post(this.link, {azione: "nuovoDoc", nome: this.nome , cognome: this.cognome} , function(data) {
-                    alert( self.nome + " "+ self.cognome +" ha stato inserito.");
-                    self.nome = '';
-                    self.cognome = '';
-                    self.elencoDoc.push(JSON.parse(data));
-                });
+                self.erroreDocNome = (this.nome == "");
+                self.erroreDocCog = (this.cognome == "");
+                if (!self.erroreDocNome && !self.erroreDocCog) {
+                    $.post(this.link, {azione: "nuovoDoc", nome: this.nome, cognome: this.cognome}, function (data) {
+                        alert(self.nome + " " + self.cognome + " ha stato inserito.");
+                        self.nome = '';
+                        self.cognome = '';
+                        self.elencoDoc.push(JSON.parse(data));
+                    });
+                }
 
             },
 
@@ -160,9 +181,12 @@
             nuovoCor:function(){
                 var self = this;
                 console.log("nuevoDoc");
-                $.post(this.link, {azione: "nuovoCor", corso: this.corso} , function(data) {
-                    alert( "Il corso " + self.corso + " ha stato inserito.");
-                });
+                self.erroreCorso = (this.corso == "");
+                if (!self.erroreCorso) {
+                    $.post(this.link, {azione: "nuovoCor", corso: this.corso}, function (data) {
+                        alert("Il corso " + self.corso + " ha stato inserito.");
+                    });
+                }
             },
 
             enviare:function(){
