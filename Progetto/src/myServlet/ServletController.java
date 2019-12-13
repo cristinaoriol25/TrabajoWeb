@@ -39,17 +39,22 @@ public class ServletController extends javax.servlet.http.HttpServlet {
         creare(doc);
         return JSONMan.serializeJson(doc);
     }
-    private void creareCorso(String corso){
+
+    private String creareCorso(String corso, JSONManager JSONMan){
         Corso c = new Corso(corso);
         creare(c);
+        return JSONMan.serializeJson(c);
     }
 
     private void rimuovereDoc(String nome, String cognome, JSONManager JSONMan){
-        System.out.println(nome + " " + cognome);
         Docente doc = new Docente(nome, cognome);
         eliminare(doc);
     }
 
+    private void rimuovereCorso(String titolo, JSONManager JSONMan){
+        Corso c = new Corso(titolo);
+        eliminare(c);
+    }
 
 
 
@@ -90,11 +95,16 @@ public class ServletController extends javax.servlet.http.HttpServlet {
                 String cog = request.getParameter("cognome");
                 rimuovereDoc(nom,cog,JSONMan);
             }
+            else if (fun.equals("elencoCor")){
+                out.println(JSONMan.serializeJson(mostrareCor()));
+            }
             else if(fun.equals("nuovoCor")){
                 String cor = request.getParameter("corso");
-                creareCorso(cor);
-
-
+                out.println(JSONMan.serializeJson(creareCorso(cor,JSONMan)));
+            }
+            else if(fun.equals("rimCorso")){
+                String cor = request.getParameter("corso");
+                rimuovereCorso(cor,JSONMan);
             }
             else {
                     out.println("Accion inexistente");

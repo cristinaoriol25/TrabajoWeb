@@ -53,13 +53,6 @@
     <div v-if="admin">
         <h2>Impostazioni </h2>
         <h3>Inserire docente</h3>
-        <!--<form action="/index.html">
-            Nome: <input type="text" v-model="nome" required/></p>
-            <br>
-            Cognome: <input type="text" v-model="cognome" required/></p>
-            <br>
-            <button v-on:click="nuovoDoc">Submit</button>
-        </form>-->
 
         <p><label for="nome"><b>Nome: </b></label>
             <input type="text" v-model="nome"/>
@@ -94,6 +87,21 @@
         </p>
         <p><button v-on:click="nuovoCor">Submit</button></p>
 
+        <h3>Elenco di corsi.</h3>
+
+
+        <table>
+            <tr>
+                <th>Titolo</th>
+                <th>Rimuoveri</th>
+            </tr>
+            <tr v-for="c in elencoCorsi">
+                <td>{{c.titulo}}</td>
+                <td><button v-on:click="rimCorso(c)">X</button></td>
+            </tr>
+        </table>
+
+
     </div>
 
 </div>
@@ -117,7 +125,8 @@
             cognome : '',
             corso : '',
             erroreCorso : false,
-            elencoDoc : []
+            elencoDoc : [],
+            elencoCorsi : []
 
         },
         computed:{
@@ -150,7 +159,12 @@
                     self.elencoPre = data;
                 });
             },
-
+            getCorsi:function() {
+                var self = this;
+                $.post(this.link, {azione: "elencoCor", utente: this.account}, function (data) {
+                    self.elencoCorsi = data;
+                });
+            },
 
             nuovoDoc:function(){
                 var self = this;
@@ -185,8 +199,20 @@
                 if (!self.erroreCorso) {
                     $.post(this.link, {azione: "nuovoCor", corso: this.corso}, function (data) {
                         alert("Il corso " + self.corso + " ha stato inserito.");
+                        corso = '';
+                        self.elencoCorsi.push(JSON.parse(data));
                     });
                 }
+            },
+
+            rimCorso:function(c){
+                var self = this;
+                $.post(this.link, {azione: "rimCorso", corso: c.titulo} , function(data) {
+
+                });
+                alert( c.titulo +" ha stato rimosso.");
+                self.elencoCorsi = self.elencoCorsi.filter( el => el !== c );
+
             },
 
             enviare:function(){
@@ -202,6 +228,7 @@
                             break;
                         case "ad":
                             self.getDocenti();
+                            self.getCorsi();
                             self.admin = true;
                             self.mostrareLog = false;
                             self.erroreConn = false;
