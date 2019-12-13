@@ -27,22 +27,67 @@
     <div v-if="mostrareElenPre" >
         <h2>I miei prenotazioni</h2>
         <h3>Attivi:</h3>
-        <ul>
-            <li  v-for="p in attivi":key="p.stato">
-                {{p.ora}} {{p.giorno}} {{p.d.cognome}} {{p.d.nome}}  {{p.c.titulo}} </li>
-        </ul>
+
+        <table>
+            <tr>
+                <th v-if="admin">Utente</th>
+                <th>Ora</th>
+                <th>Giorno</th>
+                <th>Cognome</th>
+                <th>Nome</th>
+                <th>Corso</th>
+            </tr>
+            <tr v-for="p in attivi":key="p.stato">
+                 <td v-if="admin">{{p.u.user}}</td>
+                <td>{{p.ora}}</td>
+                <td>{{p.giorno}}</td>
+                <td>{{p.d.cognome}}</td>
+                <td>{{p.d.nome}}</td>
+                <td>{{p.c.titulo}}</td>
+            </tr>
+        </table>
 
         <h3>Efettuati:</h3>
-        <ul>
-            <li  v-for="p in efettuati":key="p.stato">
-            {{p.ora}} {{p.giorno}} {{p.d.cognome}} {{p.d.nome}}  {{p.c.titulo}} </li>
-        </ul>
+        <table>
+            <tr>
+                <th v-if="admin">Utente</th>
+                <th>Ora</th>
+                <th>Giorno</th>
+                <th>Cognome</th>
+                <th>Nome</th>
+                <th>Corso</th>
+            </tr>
+            <tr v-for="p in efettuati":key="p.stato">
+                <td v-if="admin">{{p.u.user}}</td>
+                <td>{{p.ora}}</td>
+                <td>{{p.giorno}}</td>
+                <td>{{p.d.cognome}}</td>
+                <td>{{p.d.nome}}</td>
+                <td>{{p.c.titulo}}</td>
+            </tr>
+        </table>
+
 
         <h3>Disdeti:</h3>
-        <ul>
-            <li  v-for="p in disdeti":key="p.stato">
-            {{p.ora}} {{p.giorno}} {{p.d.cognome}} {{p.d.nome}}  {{p.c.titulo}} </li>
-        </ul>
+        <table>
+            <tr>
+                <th v-if="admin">Utente</th>
+                <th>Ora</th>
+                <th>Giorno</th>
+                <th>Cognome</th>
+                <th>Nome</th>
+                <th>Corso</th>
+            </tr>
+            <tr v-for="p in disdeti":key="p.stato">
+                <td v-if="admin">{{p.u.user}}</td>
+                <td>{{p.ora}}</td>
+                <td>{{p.giorno}}</td>
+                <td>{{p.d.cognome}}</td>
+                <td>{{p.d.nome}}</td>
+                <td>{{p.c.titulo}}</td>
+            </tr>
+        </table>
+
 
 
     </div>
@@ -60,7 +105,7 @@
         </p>
         <p><label for="cognome"><b>Cognome: </b></label>
             <input type="text" v-model="cognome"/>
-            <label for="eCog" v-if="erroreDocCog"> Campo vuoto </label>
+            <label for="eCog" v-if="erroreDocCogome"> Campo vuoto </label>
         </p>
         <p><button v-on:click="nuovoDoc">Submit</button></p>
 
@@ -107,7 +152,7 @@
             <option v-for="d in elencoDoc" v-bind:value="d">{{d.cognome}} {{d.nome}}</option>
         </select>
 
-        <select multiple v-model="corSelect">
+        <select v-model="corSelect">
             <option v-for="c in elencoCorsi" v-bind:value="c">{{c.titulo}}</option>
         </select>
         <p><button v-on:click="nuovaAssoc(docSelect,corSelect)">Submit</button></p>
@@ -131,7 +176,8 @@
             elencoPre : [],
             mostrareElenPre : false,
             erroreConn : false,
-            erroreDoc : false,
+            erroreDocNome : false,
+            erroreDocCogome : false,
             nome : '',
             cognome : '',
             corso : '',
@@ -181,8 +227,9 @@
 
             nuovoDoc:function(){
                 var self = this;
-                self.erroreDoc = (this.nome == "") || (this.cognome == "");
-                if (!self.erroreDoc) {
+                self.erroreDocNome = (this.nome == "")
+                self.erroreDocCognome = (this.cognome == "");
+                if (!self.erroreDocNome || !self.erroreDocCognome) {
                     $.post(this.link, {azione: "nuovoDoc", nome: this.nome, cognome: this.cognome}, function (data) {
                         alert(self.nome + " " + self.cognome + " ha stato inserito.");
                         self.nome = '';
@@ -230,8 +277,9 @@
             nuovaAssoc:function(d,c){
                 var self = this;
                 self.erroreCorso = (c.titulo == "");
-                self.erroreDoc = (c.nome == "") || (c.cognome == "");
-                if (!self.erroreCorso && !self.erroreDoc) {
+                self.erroreDocNome = (this.nome == "")
+                self.erroreDocCognome = (this.cognome == "");
+                if (!self.erroreCorso && !self.erroreDocNome || !self.erroreDocCognome ) {
                     $.post(this.link, {azione: "nuovaAssoc", corso: c.titulo, nome: d.nome, cognome: d.cognome} , function(data) {
                         alert("Associazione creata.");
                         corso = '';
@@ -252,12 +300,13 @@
                             self.mostrareElenPre = true;
                             break;
                         case "ad":
+                            console.log(self.account);
                             self.getDocenti();
                             self.getCorsi();
+                            self.getPrenotazioni();
                             self.admin = true;
                             self.mostrareLog = false;
                             self.erroreConn = false;
-                            self.getPrenotazioni();
                             self.mostrareElenPre = true;
                             break;
 

@@ -21,13 +21,13 @@ public class ServletController extends javax.servlet.http.HttpServlet {
 
     private String mostrarePrenotazione(String account,JSONManager JSONMan){
         ArrayList<Prenotazione> prenotazioni;
-        if (account == "admin")
+        if (account.equals("admin"))
             prenotazioni = getPrenotazioni();
-        else
+        else{
             prenotazioni = getPrenotazioni(account);
-
+        }
         for (Prenotazione p : prenotazioni){
-            System.out.println();
+            System.out.println(p.getU().getUser());
         }
 
         return JSONMan.serializeJson(prenotazioni);

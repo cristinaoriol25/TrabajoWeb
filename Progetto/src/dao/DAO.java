@@ -197,7 +197,7 @@ public class DAO {
             while(rs.next()){
                 Utente u = new Utente(rs.getString("usuario"));
                 Docente d = new Docente(rs.getString("nome"),rs.getString("cognome"));
-                Corso c = new Corso(rs.getString("titulo"));
+                Corso c = new Corso(rs.getString("corso"));
                 String g = rs.getString("giorno");
                 int ora = rs.getInt("ora");
                 String s = rs.getString("stato");
