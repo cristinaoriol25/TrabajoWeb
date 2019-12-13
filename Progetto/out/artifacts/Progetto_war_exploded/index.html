@@ -101,6 +101,18 @@
             </tr>
         </table>
 
+        <h3>Nuova associazione.</h3>
+
+        <select v-model="docSelect">
+            <option v-for="d in elencoDoc" v-bind:value="d">{{d.cognome}} {{d.nome}}</option>
+        </select>
+
+        <select multiple v-model="corSelect">
+            <option v-for="c in elencoCorsi" v-bind:value="c">{{c.titulo}}</option>
+        </select>
+        <p><button v-on:click="nuovaAssoc(docSelect,corSelect)">Submit</button></p>
+
+
 
     </div>
 
@@ -119,14 +131,15 @@
             elencoPre : [],
             mostrareElenPre : false,
             erroreConn : false,
-            erroreDocNome : false,
-            erroreDocCog : false,
+            erroreDoc : false,
             nome : '',
             cognome : '',
             corso : '',
             erroreCorso : false,
             elencoDoc : [],
-            elencoCorsi : []
+            elencoCorsi : [],
+            docSelect: '',
+            corSelect: ''
 
         },
         computed:{
@@ -168,9 +181,8 @@
 
             nuovoDoc:function(){
                 var self = this;
-                self.erroreDocNome = (this.nome == "");
-                self.erroreDocCog = (this.cognome == "");
-                if (!self.erroreDocNome && !self.erroreDocCog) {
+                self.erroreDoc = (this.nome == "") || (this.cognome == "");
+                if (!self.erroreDoc) {
                     $.post(this.link, {azione: "nuovoDoc", nome: this.nome, cognome: this.cognome}, function (data) {
                         alert(self.nome + " " + self.cognome + " ha stato inserito.");
                         self.nome = '';
@@ -213,6 +225,19 @@
                 alert( c.titulo +" ha stato rimosso.");
                 self.elencoCorsi = self.elencoCorsi.filter( el => el !== c );
 
+            },
+
+            nuovaAssoc:function(d,c){
+                var self = this;
+                self.erroreCorso = (c.titulo == "");
+                self.erroreDoc = (c.nome == "") || (c.cognome == "");
+                if (!self.erroreCorso && !self.erroreDoc) {
+                    $.post(this.link, {azione: "nuovaAssoc", corso: c.titulo, nome: d.nome, cognome: d.cognome} , function(data) {
+                        alert("Associazione creata.");
+                        corso = '';
+                        self.elencoCorsi.push(JSON.parse(data));
+                    })
+                }
             },
 
             enviare:function(){
