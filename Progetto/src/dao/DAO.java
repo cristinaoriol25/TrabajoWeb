@@ -428,6 +428,45 @@ public class DAO {
         return c;
     }
 
+    public static ArrayList<Imparte> mostrareAsso(){
+        Connection conn1 = null;
+        ArrayList<Imparte> li=new ArrayList<Imparte>();
+        try {
+            conn1 = DriverManager.getConnection(url1, user, password);
+            if (conn1 != null) {
+                System.out.println("Connected to the database ripetizioni");
+            }
+            Statement st = conn1.createStatement();
+            ResultSet rs = st.executeQuery("SELECT * FROM Docente WHERE attiva=1;");
+            while (rs.next()){
+                Docente d=new Docente(rs.getString("nome"), rs.getString("cognome"));
+                ResultSet r=st.executeQuery("select corso, COUNT(*) from Imparte where nome='"+rs.getString("nome")+"' and cognome='"+rs.getString("cognome")+"' and attiva=1");
+                ArrayList<Corso> corsos= new ArrayList<Corso>();
+                while(r.next()){
+                    Corso c= new Corso(r.getString("corso"));
+                    corsos.add(c);
+                }
+                if(r.getInt("COUNT(*)")!=0){
+                    Imparte i=new Imparte(d, corsos);
+                    li.add(i);
+                }
+            }
+
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            if (conn1 != null) {
+                try {
+                    conn1.close();
+                } catch (SQLException e2) {
+                    System.out.println(e2.getMessage());
+                }
+            }
+        }
+        return li;
+    }
+
 }
 
 
