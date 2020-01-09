@@ -99,19 +99,17 @@
         <h2>Impostazioni </h2>
         <h3>Inserire docente</h3>
 
-        <p><label for="nome"><b>Nome: </b></label>
+        <p><label><b>Nome: </b></label>
             <input type="text" v-model="nome"/>
-            <label for="eNome" v-if="erroreDocNome"> Campo vuoto </label>
+            <label  v-if="erroreDocNome"> Campo vuoto </label>
         </p>
-        <p><label for="cognome"><b>Cognome: </b></label>
+        <p><label ><b>Cognome: </b></label>
             <input type="text" v-model="cognome"/>
-            <label for="eCog" v-if="erroreDocCogome"> Campo vuoto </label>
+            <label  v-if="erroreDocCogome"> Campo vuoto </label>
         </p>
         <p><button v-on:click="nuovoDoc">Submit</button></p>
 
         <h3>Elenco di docenti.</h3>
-
-
         <table>
             <tr>
                 <th>Cognome</th>
@@ -133,8 +131,6 @@
         <p><button v-on:click="nuovoCor">Submit</button></p>
 
         <h3>Elenco di corsi.</h3>
-
-
         <table>
             <tr>
                 <th>Titolo</th>
@@ -156,6 +152,12 @@
             <option v-for="c in elencoCorsi" v-bind:value="c">{{c.titulo}}</option>
         </select>
         <p><button v-on:click="nuovaAssoc(docSelect,corSelect)">Submit</button></p>
+        <h3>Elenco di associazioni.</h3>
+        <ul>
+            <li v-for="a in associzioni">
+                {{a.d.cognome}} {{a.d.nome}}
+            </li>
+        </ul>
 
 
 
@@ -185,7 +187,8 @@
             elencoDoc : [],
             elencoCorsi : [],
             docSelect: '',
-            corSelect: ''
+            corSelect: '',
+            associzioni: []
 
         },
         computed:{
@@ -203,7 +206,8 @@
                 return this.elencoPre.filter(function(item) {
                     return item.stato == "CANCELLATA";
                 })
-            }
+            },
+
         },
         methods:{
             getDocenti:function() {
@@ -224,12 +228,18 @@
                     self.elencoCorsi = data;
                 });
             },
+            getAssoc:function() {
+                var self = this;
+                $.post(this.link, {azione: "elencoAsso", utente: this.account}, function (data) {
+                    self.associzione = data;
+                });
+            },
 
             nuovoDoc:function(){
                 var self = this;
                 self.erroreDocNome = (this.nome == "")
                 self.erroreDocCognome = (this.cognome == "");
-                if (!self.erroreDocNome || !self.erroreDocCognome) {
+                if (!self.erroreDocNome && !self.erroreDocCognome) {
                     $.post(this.link, {azione: "nuovoDoc", nome: this.nome, cognome: this.cognome}, function (data) {
                         alert(self.nome + " " + self.cognome + " ha stato inserito.");
                         self.nome = '';
@@ -279,11 +289,24 @@
                 self.erroreCorso = (c.titulo == "");
                 self.erroreDocNome = (this.nome == "")
                 self.erroreDocCognome = (this.cognome == "");
-                if (!self.erroreCorso && !self.erroreDocNome || !self.erroreDocCognome ) {
+                console.log(self.docSelect);
+                if (!self.erroreCorso && !self.erroreDocNome && !self.erroreDocCognome ) {
                     $.post(this.link, {azione: "nuovaAssoc", corso: c.titulo, nome: d.nome, cognome: d.cognome} , function(data) {
                         alert("Associazione creata.");
-                        corso = '';
-                        self.elencoCorsi.push(JSON.parse(data));
+                        // Buscar si existe
+                        var trovato = false;
+                        for (var i =0; i < associzioni.length(); i++){
+                            if (associzioni[i][0] == d) {
+                                associzioni[i][1].push(c.titulo);
+                                trovato = true;
+                                break;
+                            }
+                        }
+                        if (!trovato){
+                            associzioni.push(JSON.parse(data));
+                        }
+
+
                     })
                 }
             },
@@ -304,6 +327,7 @@
                             self.getDocenti();
                             self.getCorsi();
                             self.getPrenotazioni();
+                            self.getAssoc();
                             self.admin = true;
                             self.mostrareLog = false;
                             self.erroreConn = false;

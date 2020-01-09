@@ -59,8 +59,9 @@ public class ServletController extends javax.servlet.http.HttpServlet {
     private String  creareAssoc(String titolo,String nome, String cognome, JSONManager JSONMan){
         Corso c = new Corso(titolo);
         Docente doc = new Docente(nome, cognome);
-        //Imparte imp = new Imparte(doc,c);
-        return "";
+        Associazione a = new Associazione(doc,c);
+        creare(a);
+        return JSONMan.serializeJson(a);
     }
 
 

@@ -428,7 +428,7 @@ public class DAO {
         return c;
     }
 
-    public static void crearAsso(Associazione a){
+    public static void creare(Associazione a){
         Connection conn1 = null;
         try {
             conn1 = DriverManager.getConnection(url1, user, password);
