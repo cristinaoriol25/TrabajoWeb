@@ -91,12 +91,15 @@ public class ServletController extends javax.servlet.http.HttpServlet {
             else if (fun.equals("elencoDoc")){
                 out.println(JSONMan.serializeJson(mostrareDoc()));
             }
-            else if(fun.equals("nuovoDoc")){
+            else if (fun.equals("elencoAsso")){
+                out.println(JSONMan.serializeJson(mostrareAsso()));
+            }
+            else if (fun.equals("nuovoDoc")){
                 String nom = request.getParameter("nome");
                 String cog = request.getParameter("cognome");
                 out.println(JSONMan.serializeJson(creareDoc(nom,cog,JSONMan)));
             }
-            else if(fun.equals("rimDoc")){
+            else if (fun.equals("rimDoc")){
                 String nom = request.getParameter("nome");
                 String cog = request.getParameter("cognome");
                 rimuovereDoc(nom,cog,JSONMan);
@@ -104,15 +107,15 @@ public class ServletController extends javax.servlet.http.HttpServlet {
             else if (fun.equals("elencoCor")){
                 out.println(JSONMan.serializeJson(mostrareCor()));
             }
-            else if(fun.equals("nuovoCor")){
+            else if (fun.equals("nuovoCor")){
                 String cor = request.getParameter("corso");
                 out.println(JSONMan.serializeJson(creareCorso(cor,JSONMan)));
             }
-            else if(fun.equals("rimCorso")){
+            else if (fun.equals("rimCorso")){
                 String cor = request.getParameter("corso");
                 rimuovereCorso(cor,JSONMan);
             }
-            else if(fun.equals("nuovaAssoc")){
+            else if (fun.equals("nuovaAssoc")){
                 String cor = request.getParameter("corso");
                 String nom = request.getParameter("nome");
                 String cog = request.getParameter("cognome");

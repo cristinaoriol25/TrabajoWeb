@@ -133,8 +133,6 @@
         <p><button v-on:click="nuovoCor">Submit</button></p>
 
         <h3>Elenco di corsi.</h3>
-
-
         <table>
             <tr>
                 <th>Titolo</th>
@@ -156,6 +154,18 @@
             <option v-for="c in elencoCorsi" v-bind:value="c">{{c.titulo}}</option>
         </select>
         <p><button v-on:click="nuovaAssoc(docSelect,corSelect)">Submit</button></p>
+
+        <h3>Elenco di associazioni.</h3>
+        <table>
+            <tr>
+                <th>Docente</th>
+                <th>Corso</th>
+            </tr>
+            <tr v-for="a in associzione">
+                <td>{{c.titulo}}</td>
+                <td><button v-on:click="rimCorso(c)">X</button></td>
+            </tr>
+        </table>
 
 
 
@@ -185,7 +195,8 @@
             elencoDoc : [],
             elencoCorsi : [],
             docSelect: '',
-            corSelect: ''
+            corSelect: '',
+            associzione: []
 
         },
         computed:{
@@ -224,12 +235,18 @@
                     self.elencoCorsi = data;
                 });
             },
+            getAssoc:function() {
+                var self = this;
+                $.post(this.link, {azione: "elencoAsso", utente: this.account}, function (data) {
+                    self.elencoCorsi = data;
+                });
+            },
 
             nuovoDoc:function(){
                 var self = this;
                 self.erroreDocNome = (this.nome == "")
                 self.erroreDocCognome = (this.cognome == "");
-                if (!self.erroreDocNome || !self.erroreDocCognome) {
+                if (!self.erroreDocNome && !self.erroreDocCognome) {
                     $.post(this.link, {azione: "nuovoDoc", nome: this.nome, cognome: this.cognome}, function (data) {
                         alert(self.nome + " " + self.cognome + " ha stato inserito.");
                         self.nome = '';
@@ -279,7 +296,7 @@
                 self.erroreCorso = (c.titulo == "");
                 self.erroreDocNome = (this.nome == "")
                 self.erroreDocCognome = (this.cognome == "");
-                if (!self.erroreCorso && !self.erroreDocNome || !self.erroreDocCognome ) {
+                if (!self.erroreCorso && !self.erroreDocNome && !self.erroreDocCognome ) {
                     $.post(this.link, {azione: "nuovaAssoc", corso: c.titulo, nome: d.nome, cognome: d.cognome} , function(data) {
                         alert("Associazione creata.");
                         corso = '';
@@ -304,6 +321,7 @@
                             self.getDocenti();
                             self.getCorsi();
                             self.getPrenotazioni();
+                            self.getAssoc();
                             self.admin = true;
                             self.mostrareLog = false;
                             self.erroreConn = false;
