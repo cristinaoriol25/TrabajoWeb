@@ -439,12 +439,11 @@ public class DAO {
             Corso c=a.getCorso();
             Statement st = conn1.createStatement();
             ResultSet rs = st.executeQuery("SELECT COUNT(*) FROM Imparte WHERE nome='"+d.getNome()+"' and cognome='"+d.getCognome()+"' and corso='"+c.getTitulo()+"';");
-            if (rs.getInt("COUNT(*")==0){
+
+            if (rs.getInt("COUNT(*)")==0)
                 st.executeUpdate("Insert into Imparte(nome, cognome, corso) VALUES ('"+d.getNome()+"','" +d.getCognome()+"', '"+c.getTitulo()+"');");
-            }
-            else{
+            else
                 st.executeUpdate("update Imparte set attiva=1 where nome='"+d.getNome()+"'and  cognome='"+d.getCognome()+"' and corso='"+c.getTitulo()+"';");
-            }
 
 
         } catch (SQLException e) {

@@ -145,11 +145,11 @@
         <h3>Nuova associazione.</h3>
 
         <select v-model="docSelect">
-            <option v-for="d in elencoDoc" v-bind:value="d">{{d.cognome}} {{d.nome}}</option>
+            <option v-for="d in elencoDoc" :value="d">{{d.cognome}} {{d.nome}}</option>
         </select>
 
         <select v-model="corSelect">
-            <option v-for="c in elencoCorsi" v-bind:value="c">{{c.titulo}}</option>
+            <option v-for="c in elencoCorsi" :value="c">{{c.titulo}}</option>
         </select>
         <p><button v-on:click="nuovaAssoc(docSelect,corSelect)">Submit</button></p>
         <h3>Elenco di associazioni.</h3>
@@ -287,23 +287,22 @@
             nuovaAssoc:function(d,c){
                 var self = this;
                 self.erroreCorso = (c.titulo == "");
-                self.erroreDocNome = (this.nome == "")
-                self.erroreDocCognome = (this.cognome == "");
-                console.log(self.docSelect);
+                self.erroreDocNome = (d.nome == "")
+                self.erroreDocCognome = (d.cognome == "");
                 if (!self.erroreCorso && !self.erroreDocNome && !self.erroreDocCognome ) {
                     $.post(this.link, {azione: "nuovaAssoc", corso: c.titulo, nome: d.nome, cognome: d.cognome} , function(data) {
                         alert("Associazione creata.");
-                        // Buscar si existe
+                        console.log(data);
                         var trovato = false;
-                        for (var i =0; i < associzioni.length(); i++){
-                            if (associzioni[i][0] == d) {
-                                associzioni[i][1].push(c.titulo);
+                        for (var i =0; i < (self.associzioni).length; i++){
+                            if ((self.associzioni)[i][0] == d) {
+                                (self.associzioni)[i][1].push(c.titulo);
                                 trovato = true;
                                 break;
                             }
                         }
                         if (!trovato){
-                            associzioni.push(JSON.parse(data));
+                            (self.associzioni).push(JSON.parse(data));
                         }
 
 

@@ -26,9 +26,7 @@ public class ServletController extends javax.servlet.http.HttpServlet {
         else{
             prenotazioni = getPrenotazioni(account);
         }
-        for (Prenotazione p : prenotazioni){
-            System.out.println(p.getU().getUser());
-        }
+
 
         return JSONMan.serializeJson(prenotazioni);
 
