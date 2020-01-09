@@ -438,13 +438,41 @@ public class DAO {
             Docente d=a.getDocente();
             Corso c=a.getCorso();
             Statement st = conn1.createStatement();
-            ResultSet rs = st.executeQuery("SELECT COUNT(*) FROM Imparte WHERE nome='"+d.getNome()+"' cognome='"+d.getCognome()+"' and corso='"+c.getTitulo()+"';");
+            ResultSet rs = st.executeQuery("SELECT COUNT(*) FROM Imparte WHERE nome='"+d.getNome()+"' and cognome='"+d.getCognome()+"' and corso='"+c.getTitulo()+"';");
             if (rs.getInt("COUNT(*")==0){
                 st.executeUpdate("Insert into Imparte(nome, cognome, corso) VALUES ('"+d.getNome()+"','" +d.getCognome()+"', '"+c.getTitulo()+"');");
             }
             else{
-                st.executeUpdate("update Imparte set attiva=1 where nome='"+d.getNome()+"' cognome='"+d.getCognome()+"' and corso='"+c.getTitulo()+"';");
+                st.executeUpdate("update Imparte set attiva=1 where nome='"+d.getNome()+"'and  cognome='"+d.getCognome()+"' and corso='"+c.getTitulo()+"';");
             }
+
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            if (conn1 != null) {
+                try {
+                    conn1.close();
+                } catch (SQLException e2) {
+                    System.out.println(e2.getMessage());
+                }
+            }
+        }
+
+    }
+
+    public static void eliminare(Associazione a){
+        Connection conn1 = null;
+        try {
+            conn1 = DriverManager.getConnection(url1, user, password);
+            if (conn1 != null) {
+                System.out.println("Connected to the database ripetizioni");
+            }
+            Docente d=a.getDocente();
+            Corso c=a.getCorso();
+            Statement st = conn1.createStatement();
+            st.executeUpdate("update Imparte set attiva=0 where nome='"+d.getNome()+"'and cognome='"+d.getCognome()+"' and corso='"+c.getTitulo()+"';");
+
 
 
         } catch (SQLException e) {
