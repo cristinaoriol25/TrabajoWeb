@@ -153,11 +153,22 @@
         </select>
         <p><button v-on:click="nuovaAssoc(docSelect,corSelect)">Submit</button></p>
         <h3>Elenco di associazioni.</h3>
-        <ul>
-            <li v-for="a in associzioni">
-                {{a.d.cognome}} {{a.d.nome}}
-            </li>
-        </ul>
+        <div v-for="a in associzioni">
+            <h4 >
+                {{a.docente.cognome}}, {{a.docente.nome}}
+            </h4>
+                <table>
+                    <tr>
+                        <th>Titolo</th>
+                        <th>Rimuoveri</th>
+                    </tr>
+                    <tr v-for="c in a.corso">
+                        <td>{{c.titulo}}</td>
+                        <td><button v-on:click="rimCorso(c)">X</button></td>
+                    </tr>
+                </table>
+
+        </div>
 
 
 
@@ -231,6 +242,7 @@
             getAssoc:function() {
                 var self = this;
                 $.post(this.link, {azione: "elencoAsso", utente: this.account}, function (data) {
+                    console.log(data);
                     self.associzioni = data;
                 });
             },

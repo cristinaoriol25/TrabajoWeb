@@ -533,6 +533,7 @@ public class DAO {
                 }
             }
         }
+        System.out.println(li.size());
         return li;
     }
 

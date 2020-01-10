@@ -94,7 +94,9 @@ public class ServletController extends javax.servlet.http.HttpServlet {
                 out.println(JSONMan.serializeJson(mostrareDoc()));
             }
             else if (fun.equals("elencoAsso")){
-                out.println(JSONMan.serializeJson(mostrareAsso()));
+                ArrayList<Imparte> i = mostrareAsso();
+                System.out.println(i.size());
+                out.println(JSONMan.serializeJson(i));
             }
             else if (fun.equals("elencoCor")){
                 out.println(JSONMan.serializeJson(mostrareCor()));
