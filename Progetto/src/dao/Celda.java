@@ -14,4 +14,12 @@ public class Celda {
     public ArrayList<Imparte> getLibre(){
         return libres;
     }
+    public ArrayList<Imparte> getOra(){
+        return ora;
+    }
+    public ArrayList<Imparte> getGiorno(){
+        return giorno;
+    }
+
+
 }
