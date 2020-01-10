@@ -517,7 +517,6 @@ public class DAO {
                     Imparte i=new Imparte(d, corsos);
                     li.add(i);
                 }
-                System.out.println("Docentes"+rs.getString("nome"));
 
             }
 
@@ -534,6 +533,7 @@ public class DAO {
             }
         }
         System.out.println(li.size());
+
         return li;
     }
 
