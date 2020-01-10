@@ -504,16 +504,21 @@ public class DAO {
             ResultSet rs = st.executeQuery("SELECT * FROM Docente WHERE attiva=1;");
             while (rs.next()){
                 Docente d=new Docente(rs.getString("nome"), rs.getString("cognome"));
-                ResultSet r=st.executeQuery("select corso, COUNT(*) from Imparte where nome='"+rs.getString("nome")+"' and cognome='"+rs.getString("cognome")+"' and attiva=1");
+                Statement s1=conn1.createStatement();
+                ResultSet r=s1.executeQuery("select corso, COUNT(*) from Imparte where nome='"+rs.getString("nome")+"' and cognome='"+rs.getString("cognome")+"' and attiva=1");
                 ArrayList<Corso> corsos= new ArrayList<Corso>();
+                int n=0;
                 while(r.next()){
                     Corso c= new Corso(r.getString("corso"));
                     corsos.add(c);
+                    n=r.getInt("COUNT(*)");
                 }
-                if(r.getInt("COUNT(*)")!=0){
+                if(n!=0){
                     Imparte i=new Imparte(d, corsos);
                     li.add(i);
                 }
+                System.out.println("Docentes"+rs.getString("nome"));
+
             }
 
 
