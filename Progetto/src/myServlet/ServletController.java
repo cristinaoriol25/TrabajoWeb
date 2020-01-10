@@ -54,6 +54,14 @@ public class ServletController extends javax.servlet.http.HttpServlet {
         eliminare(c);
     }
 
+    private void  rimuovereAsso(String titolo,String nome, String cognome, JSONManager JSONMan){
+        Corso c = new Corso(titolo);
+        Docente doc = new Docente(nome, cognome);
+        Associazione a = new Associazione(doc,c);
+        eliminare(a);
+    }
+
+
     private String  creareAssoc(String titolo,String nome, String cognome, JSONManager JSONMan){
         Corso c = new Corso(titolo);
         Docente doc = new Docente(nome, cognome);
@@ -124,6 +132,12 @@ public class ServletController extends javax.servlet.http.HttpServlet {
                 String nom = request.getParameter("nome");
                 String cog = request.getParameter("cognome");
                 out.println(JSONMan.serializeJson(creareAssoc(cor,nom,cog,JSONMan)));
+            }
+            else if (fun.equals("rimAsso")){
+                String cor = request.getParameter("corso");
+                String nom = request.getParameter("nome");
+                String cog = request.getParameter("cognome");;
+                rimuovereAsso(cor,nom,cog,JSONMan);
             }
             else {
                     out.println("Accion inexistente");

@@ -36,6 +36,7 @@
                 <th>Cognome</th>
                 <th>Nome</th>
                 <th>Corso</th>
+                <th v-if="!admin">Effettuare</th>
             </tr>
             <tr v-for="p in attivi":key="p.stato">
                  <td v-if="admin">{{p.u.user}}</td>
@@ -44,8 +45,10 @@
                 <td>{{p.d.cognome}}</td>
                 <td>{{p.d.nome}}</td>
                 <td>{{p.c.titulo}}</td>
+                <td><button v-on:click="effettuare">EF</button></td>
             </tr>
         </table>
+
 
         <h3>Efettuati:</h3>
         <table>
@@ -164,7 +167,7 @@
                     </tr>
                     <tr v-for="c in a.corso">
                         <td>{{c.titulo}}</td>
-                        <td><button v-on:click="rimCorso(c)">X</button></td>
+                        <td><button v-on:click="rimAssoc(a.docente,c)">X</button></td>
                     </tr>
                 </table>
 
@@ -217,7 +220,7 @@
                 return this.elencoPre.filter(function(item) {
                     return item.stato == "CANCELLATA";
                 })
-            },
+            }
 
         },
         methods:{
@@ -269,6 +272,7 @@
                 });
                 alert( d.nome  + " "+ d.cognome +" ha stato rimosso.");
                 self.elencoDoc = self.elencoDoc.filter( el => el !== d );
+                self.getAssoc();
 
 
             },
@@ -293,6 +297,7 @@
                 });
                 alert( c.titulo +" ha stato rimosso.");
                 self.elencoCorsi = self.elencoCorsi.filter( el => el !== c );
+                self.getAssoc();
 
             },
 
@@ -320,6 +325,21 @@
                 }
             },
 
+            rimAssoc:function(d,c){
+                var self = this;
+                $.post(this.link, {azione: "rimAsso", corso: c.titulo, nome: d.nome , cognome: d.cognome} , function(data) {
+
+                });
+                self.getAssoc();
+                alert("Associazione rimossa.");
+            },
+
+            effettuare:function(){
+                var self = this;
+                $.post(this.link, {azione: "effettuare"} , function(data) {
+
+                });
+            },
             enviare:function(){
                 var self = this;
                 $.post(this.link, {azione: "connessione", utente: this.account , password: this.pass} , function(data) {
