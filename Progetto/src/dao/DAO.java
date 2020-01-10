@@ -342,31 +342,7 @@ public class DAO {
         }
     }
 
-    public static void eliminareImparte(Docente d, Corso c) {
-        Connection conn1 = null;
-        try {
-            conn1 = DriverManager.getConnection(url1, user, password);
-            if (conn1 != null) {
-                System.out.println("Connected to the database ripetizioni");
-            }
-            Statement st = conn1.createStatement();
 
-            st.executeUpdate("UPDATE Imparte SET attiva=0 WHERE corso='" + c.getTitulo() + "' AND nome='" + d.getNome() + "' AND cognome='" + d.getCognome() + "';");
-            st.executeUpdate("UPDATE Prenotazione SET stato='CANCELLATA' WHERE corso='" + c.getTitulo() + "' AND nome='" + d.getNome() + "' AND cognome='" + d.getCognome() + "';");
-
-
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        } finally {
-            if (conn1 != null) {
-                try {
-                    conn1.close();
-                } catch (SQLException e2) {
-                    System.out.println(e2.getMessage());
-                }
-            }
-        }
-    }
 
     public static ArrayList<Docente> mostrareDoc(){
         Connection conn1 = null;
