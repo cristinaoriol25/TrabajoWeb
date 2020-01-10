@@ -59,7 +59,10 @@ public class ServletController extends javax.servlet.http.HttpServlet {
         Docente doc = new Docente(nome, cognome);
         Associazione a = new Associazione(doc,c);
         creare(a);
-        return JSONMan.serializeJson(a);
+        // La vista labora con la clase imparte.
+        ArrayList<Corso> arrayCorso = new ArrayList<Corso>();
+        arrayCorso.add(c);
+        return JSONMan.serializeJson(new Imparte(doc,arrayCorso));
     }
 
 
@@ -93,6 +96,9 @@ public class ServletController extends javax.servlet.http.HttpServlet {
             else if (fun.equals("elencoAsso")){
                 out.println(JSONMan.serializeJson(mostrareAsso()));
             }
+            else if (fun.equals("elencoCor")){
+                out.println(JSONMan.serializeJson(mostrareCor()));
+            }
             else if (fun.equals("nuovoDoc")){
                 String nom = request.getParameter("nome");
                 String cog = request.getParameter("cognome");
@@ -102,9 +108,6 @@ public class ServletController extends javax.servlet.http.HttpServlet {
                 String nom = request.getParameter("nome");
                 String cog = request.getParameter("cognome");
                 rimuovereDoc(nom,cog,JSONMan);
-            }
-            else if (fun.equals("elencoCor")){
-                out.println(JSONMan.serializeJson(mostrareCor()));
             }
             else if (fun.equals("nuovoCor")){
                 String cor = request.getParameter("corso");

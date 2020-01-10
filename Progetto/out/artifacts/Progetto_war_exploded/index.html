@@ -231,7 +231,7 @@
             getAssoc:function() {
                 var self = this;
                 $.post(this.link, {azione: "elencoAsso", utente: this.account}, function (data) {
-                    self.associzione = data;
+                    self.associzioni = data;
                 });
             },
 
@@ -287,26 +287,33 @@
             nuovaAssoc:function(d,c){
                 var self = this;
                 self.erroreCorso = (c.titulo == "");
-                self.erroreDocNome = (d.nome == "")
+                self.erroreDocNome = (d.nome == "");
                 self.erroreDocCognome = (d.cognome == "");
                 if (!self.erroreCorso && !self.erroreDocNome && !self.erroreDocCognome ) {
                     $.post(this.link, {azione: "nuovaAssoc", corso: c.titulo, nome: d.nome, cognome: d.cognome} , function(data) {
                         alert("Associazione creata.");
                         console.log(data);
+                        // inserto il nuovo elemento nell'elenco senza chiamare al servLet una volta ancora
                         var trovato = false;
-                        for (var i =0; i < (self.associzioni).length; i++){
-                            if ((self.associzioni)[i][0] == d) {
-                                (self.associzioni)[i][1].push(c.titulo);
+                        for (var i =0; i < self.associzioni.length; i++){
+                            console.log("AQUI TAMBIEN");
+                            console.log((self.associzioni)[i]["docente"]["nome"]);
+                            console.log(d.nome);
+                            console.log((self.associzioni)[i]["docente"]["nome"] === d.nome);
+                            if ((self.associzioni)[i]["docente"]["nome"] === d.nome && (self.associzioni)[i]["docente"]["cognome"] === d.cognome) {
+                                ((self.associzioni)[i]["corso"]).push(c.titulo);
                                 trovato = true;
+                                console.log(self.associzioni);
                                 break;
                             }
                         }
                         if (!trovato){
-                            (self.associzioni).push(JSON.parse(data));
+                            console.log("AQUI ENTRA.");
+                            self.associzioni.push(JSON.parse(data));
+                            console.log(self.associzioni);
                         }
+                    });
 
-
-                    })
                 }
             },
 
