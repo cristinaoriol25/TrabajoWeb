@@ -131,11 +131,12 @@ public class DAO {
             ResultSet p;
             while(rs.next()){
                 Docente d=new Docente(rs.getString("nome"), rs.getString("cognome"));
-                p=st.executeQuery("SELECT COUNT(*) FROM Prenotazione where nome='" +d.getNome()+"' and cognome='"+d.getCognome()+"' and giorno='"+g+"' and ora="+o+" and stato='ATTIVA';");
+                Statement s1 = conn1.createStatement();
+                p=s1.executeQuery("SELECT COUNT(*) FROM Prenotazione where nome='" +d.getNome()+"' and cognome='"+d.getCognome()+"' and giorno='"+g+"' and ora="+o+" and stato='ATTIVA';");
                 p.next();
                 if(p.getInt("COUNT(*)")==0){
                     ArrayList<Corso> c=new ArrayList<Corso>();
-                    p=st.executeQuery("SELECT corso from Imparte where nome='" +d.getNome()+"' and cognome='"+d.getCognome()+"';");
+                    p=s1.executeQuery("SELECT corso from Imparte where nome='" +d.getNome()+"' and cognome='"+d.getCognome()+"';");
                     while(p.next()){
                         Corso co=new Corso(p.getString("corso"));
                         c.add(co);
