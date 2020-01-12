@@ -124,8 +124,11 @@ public class ServletController extends javax.servlet.http.HttpServlet {
                 out.println(JSONMan.serializeJson(creareCorso(cor,JSONMan)));
             }
             else if (fun.equals("rimCorso")){
-                String cor = request.getParameter("corso");
-                rimuovereCorso(cor,JSONMan);
+                //String cor = request.getParameter("corso");
+                //rimuovereCorso(cor,JSONMan);
+                System.out.println(request.getParameter("corso"));
+                Corso c = JSONMan.parseJson(request.getParameter("corso"), Corso.class);
+                eliminare(c);
             }
             else if (fun.equals("nuovaAssoc")){
                 String cor = request.getParameter("corso");
@@ -148,6 +151,8 @@ public class ServletController extends javax.servlet.http.HttpServlet {
 
 
 
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

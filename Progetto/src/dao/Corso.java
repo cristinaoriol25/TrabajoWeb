@@ -17,4 +17,8 @@ public class Corso {
     public String toString() {
         return titulo;
     }
+
+    public Corso(){
+
+    }
 }

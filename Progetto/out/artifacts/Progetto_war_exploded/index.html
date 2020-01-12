@@ -292,7 +292,7 @@
 
             rimCorso:function(c){
                 var self = this;
-                $.post(this.link, {azione: "rimCorso", corso: c.titulo} , function(data) {
+                $.post(this.link, {azione: "rimCorso", corso: JSON.stringify(c)} , function(data) {
 
                 });
                 alert( c.titulo +" ha stato rimosso.");
