@@ -26,4 +26,5 @@ public class Utente {
         return admin;
     }
 
+    public Utente(){}
 }

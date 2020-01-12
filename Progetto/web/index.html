@@ -45,12 +45,12 @@
                 <td>{{p.d.cognome}}</td>
                 <td>{{p.d.nome}}</td>
                 <td>{{p.c.titulo}}</td>
-                <td><button v-on:click="effettuare">EF</button></td>
+                <td v-if="!admin"><button v-on:click="effettuare(p)">EFF</button></td>
             </tr>
         </table>
 
 
-        <h3>Efettuati:</h3>
+        <h3>Effettuati:</h3>
         <table>
             <tr>
                 <th v-if="admin">Utente</th>
@@ -60,7 +60,7 @@
                 <th>Nome</th>
                 <th>Corso</th>
             </tr>
-            <tr v-for="p in efettuati":key="p.stato">
+            <tr v-for="p in effettuati":key="p.stato">
                 <td v-if="admin">{{p.u.user}}</td>
                 <td>{{p.ora}}</td>
                 <td>{{p.giorno}}</td>
@@ -211,9 +211,9 @@
                     return item.stato == "ATTIVA";
                 })
             },
-            efettuati: function() {
+            effettuati: function() {
                 return this.elencoPre.filter(function(item) {
-                    return item.stato == "EFETTUATA";
+                    return item.stato == "EFFETTUATA";
                 })
             },
             disdeti: function() {
@@ -267,7 +267,7 @@
 
             rimDoc:function(d){
                 var self = this;
-                $.post(this.link, {azione: "rimDoc", nome: d.nome , cognome: d.cognome} , function(data) {
+                $.post(this.link, {azione: "rimDoc", docente: JSON.stringify(d)} , function(data) {
 
                 });
                 alert( d.nome  + " "+ d.cognome +" ha stato rimosso.");
@@ -307,7 +307,7 @@
                 self.erroreDocNome = (d.nome == "");
                 self.erroreDocCognome = (d.cognome == "");
                 if (!self.erroreCorso && !self.erroreDocNome && !self.erroreDocCognome ) {
-                    $.post(this.link, {azione: "nuovaAssoc", corso: c.titulo, nome: d.nome, cognome: d.cognome} , function(data) {
+                    $.post(this.link, {azione: "nuovaAssoc", corso: JSON.stringify(c), docente: JSON.stringify(d)} , function(data) {
                         alert("Associazione creata.");
                         // inserto il nuovo elemento nell'elenco senza chiamare al servLet una volta ancora
                         var trovato = false;
@@ -327,17 +327,17 @@
 
             rimAssoc:function(d,c){
                 var self = this;
-                $.post(this.link, {azione: "rimAsso", corso: c.titulo, nome: d.nome , cognome: d.cognome} , function(data) {
+                $.post(this.link, {azione: "rimAsso", corso: JSON.stringify(c), docente: JSON.stringify(d)} , function(data) {
 
                 });
                 self.getAssoc();
                 alert("Associazione rimossa.");
             },
 
-            effettuare:function(){
+            effettuare:function(p){
                 var self = this;
-                $.post(this.link, {azione: "effettuare"} , function(data) {
-
+                $.post(this.link, {azione: "effettuare", pre: JSON.stringify(p)} , function(data) {
+                    self.getPrenotazioni();
                 });
             },
             enviare:function(){

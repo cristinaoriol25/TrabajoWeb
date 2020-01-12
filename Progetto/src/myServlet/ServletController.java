@@ -44,27 +44,7 @@ public class ServletController extends javax.servlet.http.HttpServlet {
         return JSONMan.serializeJson(c);
     }
 
-    private void rimuovereDoc(String nome, String cognome, JSONManager JSONMan){
-        Docente doc = new Docente(nome, cognome);
-        eliminare(doc);
-    }
-
-    private void rimuovereCorso(String titolo, JSONManager JSONMan){
-        Corso c = new Corso(titolo);
-        eliminare(c);
-    }
-
-    private void  rimuovereAsso(String titolo,String nome, String cognome, JSONManager JSONMan){
-        Corso c = new Corso(titolo);
-        Docente doc = new Docente(nome, cognome);
-        Associazione a = new Associazione(doc,c);
-        eliminare(a);
-    }
-
-
-    private String  creareAssoc(String titolo,String nome, String cognome, JSONManager JSONMan){
-        Corso c = new Corso(titolo);
-        Docente doc = new Docente(nome, cognome);
+    private String  creareAssoc(Corso c,Docente doc, JSONManager JSONMan){
         Associazione a = new Associazione(doc,c);
         creare(a);
         // La vista labora con la clase imparte.
@@ -72,8 +52,6 @@ public class ServletController extends javax.servlet.http.HttpServlet {
         arrayCorso.add(c);
         return JSONMan.serializeJson(new Imparte(doc,arrayCorso));
     }
-
-
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
@@ -115,42 +93,35 @@ public class ServletController extends javax.servlet.http.HttpServlet {
                 out.println(JSONMan.serializeJson(creareDoc(nom,cog,JSONMan)));
             }
             else if (fun.equals("rimDoc")){
-                String nom = request.getParameter("nome");
-                String cog = request.getParameter("cognome");
-                rimuovereDoc(nom,cog,JSONMan);
+                Docente d = JSONMan.parseJson(request.getParameter("docente"), Docente.class);
+                eliminare(d);
             }
             else if (fun.equals("nuovoCor")){
                 String cor = request.getParameter("corso");
                 out.println(JSONMan.serializeJson(creareCorso(cor,JSONMan)));
             }
             else if (fun.equals("rimCorso")){
-                //String cor = request.getParameter("corso");
-                //rimuovereCorso(cor,JSONMan);
-                System.out.println(request.getParameter("corso"));
                 Corso c = JSONMan.parseJson(request.getParameter("corso"), Corso.class);
                 eliminare(c);
             }
             else if (fun.equals("nuovaAssoc")){
-                String cor = request.getParameter("corso");
-                String nom = request.getParameter("nome");
-                String cog = request.getParameter("cognome");
-                out.println(JSONMan.serializeJson(creareAssoc(cor,nom,cog,JSONMan)));
+                Corso c = JSONMan.parseJson(request.getParameter("corso"), Corso.class);
+                Docente d = JSONMan.parseJson(request.getParameter("docente"), Docente.class);
+                out.println(JSONMan.serializeJson(creareAssoc(c,d,JSONMan)));
             }
             else if (fun.equals("rimAsso")){
-                String cor = request.getParameter("corso");
-                String nom = request.getParameter("nome");
-                String cog = request.getParameter("cognome");;
-                rimuovereAsso(cor,nom,cog,JSONMan);
+                Corso c = JSONMan.parseJson(request.getParameter("corso"), Corso.class);
+                Docente d = JSONMan.parseJson(request.getParameter("docente"), Docente.class);
+                Associazione a = new Associazione(d,c);
+                eliminare(a);
+            }
+            else if (fun.equals("effettuare")){
+                Prenotazione p = JSONMan.parseJson(request.getParameter("pre"), Prenotazione.class);
+                effetuata(p);
             }
             else {
                     out.println("Accion inexistente");
             }
-
-
-
-
-
-
         } catch (Exception e) {
             e.printStackTrace();
         }

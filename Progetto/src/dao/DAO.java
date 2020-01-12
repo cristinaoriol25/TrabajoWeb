@@ -276,7 +276,7 @@ public class DAO {
                 System.out.println("Connected to the database ripetizioni");
             }
             Statement st = conn1.createStatement();
-            st.executeUpdate("UPDATE 'Prenotazione' where usuario='"+p.getU().getUser()+"' and ora="+p.getOra()+" and giorno='"+p.getGiorno()+"' set 'stato'='EFFETTUATA'");
+            st.executeUpdate("UPDATE Prenotazione set stato='EFFETTUATA' where usuario='"+p.getU().getUser()+"' and ora="+p.getOra()+" and giorno='"+p.getGiorno()+"'");
 
         } catch (SQLException e) {
             System.out.println(e.getMessage());

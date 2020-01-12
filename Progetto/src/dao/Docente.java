@@ -23,4 +23,7 @@ public class Docente {
     public String toString() {
         return nome + " " + cognome;
     }
+
+    public Docente(){}
+
 }

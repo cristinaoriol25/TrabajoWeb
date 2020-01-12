@@ -35,4 +35,6 @@ public class Prenotazione {
     public String toString() {
         return ora+" " +giorno + "-" + c.getTitulo()+"-" + d.getCognome()+","+ d.getNome() +"-" +stato;
     }
+
+    public Prenotazione(){}
 }
