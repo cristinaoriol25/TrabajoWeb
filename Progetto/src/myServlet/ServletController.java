@@ -20,13 +20,11 @@ public class ServletController extends javax.servlet.http.HttpServlet {
 
     private  String mostrareOraLibera(JSONManager JSONMan) {
         ArrayList<Celda> celdas = new ArrayList<>();
-        String giorno = "LUNEDI";
-        for (int i = 15; i <= 19; i++) {
-            celdas.add(oraLibera(giorno, i));
-        }
-        System.out.println("LONGITUD: " + celdas.size());
-        for (int i = 0; i < celdas.size(); i++) {
-            System.out.println(celdas.get(i).getGiorno() + " " + celdas.get(i).getOra() + " " + celdas.get(i).getLibres().size());
+        String[] giorni = {"LUNEDI","MARTEDI","MERCOLEDI","GIOVEDI","VENERDI"};
+        for (String g:giorni){
+            for (int i = 15; i < 19; i++) {
+                celdas.add(oraLibera(g, i));
+            }
         }
         return JSONMan.serializeJson(celdas);
     }

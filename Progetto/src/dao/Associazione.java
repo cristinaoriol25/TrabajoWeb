@@ -10,7 +10,7 @@ public class Associazione {
         d=doc;
         corso=c;
     }
-    public Docente getDocente(){
+    public Docente getD(){
         return d;
     }
     public Corso getCorso(){

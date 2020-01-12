@@ -75,7 +75,7 @@ public class DAO {
             Statement st = conn1.createStatement();
             ResultSet r= st.executeQuery("select * from Docente where nome='"+d.getNome()+"'and cognome='"+d.getCognome()+"';");
             if(r.next()) {
-                st.executeUpdate("update Imparte where nome='"+d.getNome()+"'and cognome='"+d.getCognome()+"' set attiva=1");
+                st.executeUpdate("update Imparte set attiva=1 where nome='"+d.getNome()+"'and cognome='"+d.getCognome()+"' ;");
             }
             else{
                 st.executeUpdate("INSERT INTO `Docente` (`nome`, `cognome`, `attiva`) VALUES ('" + d.getNome() + "', '" +
@@ -422,7 +422,7 @@ public class DAO {
             if (conn1 != null) {
                 System.out.println("Connected to the database ripetizioni");
             }
-            Docente d=a.getDocente();
+            Docente d=a.getD();
             Corso c=a.getCorso();
             Statement st = conn1.createStatement();
             System.out.println("Estoy en la base.");
@@ -458,7 +458,7 @@ public class DAO {
             if (conn1 != null) {
                 System.out.println("Connected to the database ripetizioni");
             }
-            Docente d=a.getDocente();
+            Docente d=a.getD();
             Corso c=a.getCorso();
             Statement st = conn1.createStatement();
             st.executeUpdate("update Imparte set attiva=0 where nome='"+d.getNome()+"'and cognome='"+d.getCognome()+"' and corso='"+c.getTitulo()+"';");

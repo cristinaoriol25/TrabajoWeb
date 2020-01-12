@@ -4,14 +4,12 @@
     <meta charset="UTF-8">
     <title>home</title>
     <meta http-equiv="Cache-Control" content="no-store" />
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script type="text/javascript" src="myScript.js"></script>
+
 </head>
 <body>
-
-<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-
-
-
 
 
 <div id="app">
@@ -38,40 +36,27 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>15</td>
-                    <td>
-                        <div v-for="c in inCelda">
+                <tr v-for="o in ore">
+                    <td>{{o}}</td>
+                    <td v-for="g in giorni">
+                        <div v-for="c in inCelda(g,o)">
                             <div v-for="k in c.libres">
-                                <label>{{k.d.nome}} {{k.d.cognome}}</label>
-                                <label v-for="v in k.corso">{{v.titulo}} </label>
+                                <h4>{{k.d.nome}} {{k.d.cognome}}</h4>
+                                <div v-for="v in k.corso">{{v.titulo}} <input type="checkbox" :value="g+9+o+9+k.d.nome+9+k.d.cognome+9+v.titulo" v-model="checked"> </div>
                             </div>
                         </div>
                     </td>
                 </tr>
-                <tr>
-                    <td>16</td>
-                </tr>
-                <tr>
-                    <td>17</td>
-                </tr>
-                <tr>
-                    <td>18</td>
-                </tr>
             </tbody>
         </table>
-        <div v-for="c in celdas">
-            <h3>{{c.giorno}} {{c.ora}}</h3>
-            <div v-for="i in c.libres">
-                <h4>{{i.d.cognome}} {{i.d.nome}}</h4>
-            </div>
-        </div>
+        <p><button v-on:click="prenotare">PRENOTARE</button></p>
+        <span>Checked: {{checked}}</span>
 
         <h2>I miei prenotazioni</h2>
         <h3>Attivi:</h3>
-        <div v-if="attivi.length==0">Non c'è nessuna prenotazione attivi.</div>
+        <div v-if="attivi.length===0">Non c'è nessuna prenotazione attivi.</div>
         <table>
-            <tr v-if="attivi.length!=0">
+            <tr v-if="attivi.length!==0">
                 <th v-if="admin">Utente</th>
                 <th >Ora</th>
                 <th>Giorno</th>
@@ -161,8 +146,9 @@
         <p><button v-on:click="nuovoDoc">Submit</button></p>
 
         <h3>Elenco di docenti.</h3>
+        <div v-if="elencoDoc.length===0">Non c'è nessun docente registrato.</div>
         <table>
-            <tr>
+            <tr v-if="elencoDoc.length!==0">
                 <th>Cognome</th>
                 <th>Nome</th>
                 <th>Rimuoveri</th>
@@ -182,8 +168,9 @@
         <p><button v-on:click="nuovoCor">Submit</button></p>
 
         <h3>Elenco di corsi.</h3>
+        <div v-if="elencoCorsi.length===0">Non c'è nessun corso registrato.</div>
         <table>
-            <tr>
+            <tr v-if="elencoCorsi.length!==0">
                 <th>Titolo</th>
                 <th>Rimuoveri</th>
             </tr>
@@ -204,9 +191,10 @@
         </select>
         <p><button v-on:click="nuovaAssoc(docSelect,corSelect)">Submit</button></p>
         <h3>Elenco di associazioni.</h3>
+        <div v-if="associzioni.length===0">Non c'è nessuna associazione registrata.</div>
         <div v-for="a in associzioni">
             <h4 >
-                {{a.docente.cognome}}, {{a.docente.nome}}
+                {{a.d.cognome}}, {{a.d.nome}}
             </h4>
                 <table>
                     <tr>
@@ -215,7 +203,7 @@
                     </tr>
                     <tr v-for="c in a.corso">
                         <td>{{c.titulo}}</td>
-                        <td><button v-on:click="rimAssoc(a.docente,c)">X</button></td>
+                        <td><button v-on:click="rimAssoc(a.d,c)">X</button></td>
                     </tr>
                 </table>
 
@@ -226,8 +214,8 @@
     </div>
 
 </div>
-
 <script>
+
     var app = new Vue ({
         el: '#app',
         data: {
@@ -251,7 +239,10 @@
             elencoCorsi : [],
             docSelect: '',
             corSelect: '',
-            associzioni: []
+            associzioni: [],
+            ore: [15,16,17,18],
+            giorni: ["LUNEDI","MARTEDI","MERCOLEDI","GIOVEDI","VENERDI"],
+            checked: []
 
         },
         computed:{
@@ -269,14 +260,14 @@
                 return this.elencoPre.filter(function(item) {
                     return item.stato == "CANCELLATA";
                 })
-            },
-            inCelda: function () {
-                return this.celdas.filter(function (item) {
-                    return item.giorno == "LUNEDI" && item.ora == 15;
-                })
             }
         },
         methods:{
+            inCelda: function (g,o) {
+                return this.celdas.filter(function (item) {
+                    return item.giorno === g && item.ora === o;
+                })
+            },
             getCeldas:function() {
                 var self = this;
                 $.post(this.link, {azione: "oraLibera", utente: this.account}, function (data) {
@@ -305,7 +296,6 @@
             getAssoc:function() {
                 var self = this;
                 $.post(this.link, {azione: "elencoAsso", utente: this.account}, function (data) {
-                    console.log(data);
                     self.associzioni = data;
                 });
             },
@@ -315,19 +305,25 @@
                 self.erroreDocCognome = (this.cognome == "");
                 if (!self.erroreDocNome && !self.erroreDocCognome) {
                     $.post(this.link, {azione: "nuovoDoc", nome: this.nome, cognome: this.cognome}, function (data) {
-                        alert(self.nome + " " + self.cognome + " ha stato inserito.");
+                        console.log(self.elencoDoc.includes(data));
+                        console.log(data);
+                        console.log(self.elencoDoc);
+                        if (!(self.elencoDoc.includes(data))) {
+                            alert(self.nome + " " + self.cognome + " ha stato inserito.");
+                            self.elencoDoc.push(JSON.parse(data));
+                        }
+                        else{
+                            alert(self.nome + " " + self.cognome +  " è già registrato.");
+                        }
                         self.nome = '';
                         self.cognome = '';
-                        self.elencoDoc.push(JSON.parse(data));
                     });
                 }
 
             },
             rimDoc:function(d){
                 var self = this;
-                $.post(this.link, {azione: "rimDoc", docente: JSON.stringify(d)} , function(data) {
-
-                });
+                $.post(this.link, {azione: "rimDoc", docente: JSON.stringify(d)});
                 alert( d.nome  + " "+ d.cognome +" ha stato rimosso.");
                 self.elencoDoc = self.elencoDoc.filter( el => el !== d );
                 self.getAssoc();
@@ -337,13 +333,17 @@
 
             nuovoCor:function(){
                 var self = this;
-                console.log("nuevoDoc");
                 self.erroreCorso = (this.corso == "");
                 if (!self.erroreCorso) {
                     $.post(this.link, {azione: "nuovoCor", corso: this.corso}, function (data) {
-                        alert("Il corso " + self.corso + " ha stato inserito.");
-                        corso = '';
-                        self.elencoCorsi.push(JSON.parse(data));
+                        if (!(self.elencoCorsi.includes(data))) {
+                            alert("Il corso " + self.corso + " ha stato inserito.");
+                            self.elencoCorsi.push(JSON.parse(data));
+                        }
+                        else{
+                            alert("Il corso " + self.corso + " è già registrato.");
+                        }
+                        self.corso = '';
                     });
                 }
             },
@@ -402,6 +402,10 @@
                 $.post(this.link, {azione: "disdire", pre: JSON.stringify(p)});
                 p.stato = "CANCELLATA";
             },
+            prenotare:function() {
+                var self = this;
+                console.log("Hay que hacerlo chavales" + this.checked);
+            },
             enviare:function(){
                 var self = this;
                 $.post(this.link, {azione: "connessione", utente: this.account , password: this.pass} , function(data) {
@@ -419,6 +423,7 @@
                             self.getCorsi();
                             self.getPrenotazioni();
                             self.getAssoc();
+                            self.getCeldas();
                             self.admin = true;
                             self.mostrareLog = false;
                             self.erroreConn = false;
@@ -431,7 +436,6 @@
 
 
                     }
-                    console.log(self.erroreConn);
 
                 });
             }
@@ -441,6 +445,7 @@
 
         }
     });
+
 </script>
 
 
