@@ -17,7 +17,7 @@
 <div id="app">
     <div v-if="mostrareLog">
         <h1>Login</h1>
-        <p><label for="login"><b>Login: </b></label>
+        <p><label for="login"><b>Username: </b></label>
             <input type="text" v-model="account" required/></p>
         <p><label for="pass"><b>Password: </b></label>
             <input type="password" v-model="pass" required></p>
@@ -69,31 +69,34 @@
 
         <h2>I miei prenotazioni</h2>
         <h3>Attivi:</h3>
-
+        <div v-if="attivi.length==0">Non c'è nessuna prenotazione attivi.</div>
         <table>
-            <tr>
+            <tr v-if="attivi.length!=0">
                 <th v-if="admin">Utente</th>
-                <th>Ora</th>
+                <th >Ora</th>
                 <th>Giorno</th>
                 <th>Cognome</th>
                 <th>Nome</th>
                 <th>Corso</th>
                 <th v-if="!admin">Effettuare</th>
+                <th>Disdire</th>
             </tr>
             <tr v-for="p in attivi":key="p.stato">
-                 <td v-if="admin">{{p.u.user}}</td>
+                 <td v-if="admin" >{{p.u.user}}</td>
                 <td>{{p.ora}}</td>
                 <td>{{p.giorno}}</td>
                 <td>{{p.d.cognome}}</td>
                 <td>{{p.d.nome}}</td>
                 <td>{{p.c.titulo}}</td>
                 <td v-if="!admin"><button v-on:click="effettuare(p)">EFF</button></td>
+                <td><button v-on:click="disdire(p)">X</button></td>
             </tr>
         </table>
 
 
         <h3>Effettuati:</h3>
-        <table>
+        <div v-if="effettuati.length===0">Non c'è nessuna prenotazione effettuati.</div>
+        <table v-if="effettuati.length!==0">
             <tr>
                 <th v-if="admin">Utente</th>
                 <th>Ora</th>
@@ -101,6 +104,7 @@
                 <th>Cognome</th>
                 <th>Nome</th>
                 <th>Corso</th>
+                <th>Disdire</th>
             </tr>
             <tr v-for="p in effettuati":key="p.stato">
                 <td v-if="admin">{{p.u.user}}</td>
@@ -109,14 +113,16 @@
                 <td>{{p.d.cognome}}</td>
                 <td>{{p.d.nome}}</td>
                 <td>{{p.c.titulo}}</td>
+                <td><button v-on:click="disdire(p)">X</button></td>
             </tr>
         </table>
 
 
         <h3>Disdeti:</h3>
+        <div v-if="disdeti.length===0">Non c'è nessuna prenotazione disdeta.</div>
         <table>
-            <tr>
-                <th v-if="admin">Utente</th>
+            <tr v-if="disdeti.length!==0">
+                <th v-if="admin" >Utente</th>
                 <th>Ora</th>
                 <th>Giorno</th>
                 <th>Cognome</th>
@@ -303,7 +309,6 @@
                     self.associzioni = data;
                 });
             },
-
             nuovoDoc:function(){
                 var self = this;
                 self.erroreDocNome = (this.nome == "")
@@ -318,7 +323,6 @@
                 }
 
             },
-
             rimDoc:function(d){
                 var self = this;
                 $.post(this.link, {azione: "rimDoc", docente: JSON.stringify(d)} , function(data) {
@@ -390,9 +394,13 @@
 
             effettuare:function(p){
                 var self = this;
-                $.post(this.link, {azione: "effettuare", pre: JSON.stringify(p)} , function(data) {
-                    self.getPrenotazioni();
-                });
+                $.post(this.link, {azione: "effettuare", pre: JSON.stringify(p)});
+                p.stato = "EFFETTUATA";
+            },
+            disdire:function(p){
+                var self = this;
+                $.post(this.link, {azione: "disdire", pre: JSON.stringify(p)});
+                p.stato = "CANCELLATA";
             },
             enviare:function(){
                 var self = this;
@@ -407,7 +415,6 @@
                             self.mostrareElenPre = true;
                             break;
                         case "ad":
-                            console.log(self.account);
                             self.getDocenti();
                             self.getCorsi();
                             self.getPrenotazioni();
