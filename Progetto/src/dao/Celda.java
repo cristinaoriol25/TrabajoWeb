@@ -11,7 +11,7 @@ public class Celda {
         ora=o;
         libres=imp;
     }
-    public ArrayList<Imparte> getLibre(){
+    public ArrayList<Imparte> getLibres(){
         return libres;
     }
     public int getOra(){

@@ -25,6 +25,48 @@
     </div>
 
     <div v-if="mostrareElenPre" >
+        <h2>Nuova Prenotazione</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ORA/GIORNO</th>
+                    <th>LUNEDI</th>
+                    <th>MARTEDI</th>
+                    <th>MERCOLEDI</th>
+                    <th>GIOVEDI</th>
+                    <th>VENERDI</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>15</td>
+                    <td>
+                        <div v-for="c in inCelda">
+                            <div v-for="k in c.libres">
+                                <label>{{k.d.nome}} {{k.d.cognome}}</label>
+                                <label v-for="v in k.corso">{{v.titulo}} </label>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>16</td>
+                </tr>
+                <tr>
+                    <td>17</td>
+                </tr>
+                <tr>
+                    <td>18</td>
+                </tr>
+            </tbody>
+        </table>
+        <div v-for="c in celdas">
+            <h3>{{c.giorno}} {{c.ora}}</h3>
+            <div v-for="i in c.libres">
+                <h4>{{i.d.cognome}} {{i.d.nome}}</h4>
+            </div>
+        </div>
+
         <h2>I miei prenotazioni</h2>
         <h3>Attivi:</h3>
 
@@ -189,6 +231,7 @@
 
             mostrareLog : true,
             admin : false,
+            celdas : [],
             elencoPre : [],
             mostrareElenPre : false,
             erroreConn : false,
@@ -220,10 +263,21 @@
                 return this.elencoPre.filter(function(item) {
                     return item.stato == "CANCELLATA";
                 })
+            },
+            inCelda: function () {
+                return this.celdas.filter(function (item) {
+                    return item.giorno == "LUNEDI" && item.ora == 15;
+                })
             }
-
         },
         methods:{
+            getCeldas:function() {
+                var self = this;
+                $.post(this.link, {azione: "oraLibera", utente: this.account}, function (data) {
+                    self.celdas = data;
+                });
+                console.log("hola" + self.celdas.length);
+            },
             getDocenti:function() {
                 var self = this;
                 $.post(this.link, {azione: "elencoDoc", utente: this.account}, function (data) {
@@ -349,6 +403,7 @@
                             self.erroreConn = false;
                             self.mostrareLog = false;
                             self.getPrenotazioni();
+                            self.getCeldas();
                             self.mostrareElenPre = true;
                             break;
                         case "ad":

@@ -5,7 +5,6 @@ import myBeans.JSONManager;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -18,6 +17,19 @@ import static dao.DAO.*;
 @WebServlet(name = "ServletController", urlPatterns = {"/ServletController"})
 public class ServletController extends javax.servlet.http.HttpServlet {
 
+
+    private  String mostrareOraLibera(JSONManager JSONMan) {
+        ArrayList<Celda> celdas = new ArrayList<>();
+        String giorno = "LUNEDI";
+        for (int i = 15; i <= 19; i++) {
+            celdas.add(oraLibera(giorno, i));
+        }
+        System.out.println("LONGITUD: " + celdas.size());
+        for (int i = 0; i < celdas.size(); i++) {
+            System.out.println(celdas.get(i).getGiorno() + " " + celdas.get(i).getOra() + " " + celdas.get(i).getLibres().size());
+        }
+        return JSONMan.serializeJson(celdas);
+    }
 
     private String mostrarePrenotazione(String account,JSONManager JSONMan){
         ArrayList<Prenotazione> prenotazioni;
@@ -71,6 +83,9 @@ public class ServletController extends javax.servlet.http.HttpServlet {
                 else {
                     out.println(JSONMan.serializeJson("f"));
                 }
+            }
+            else if (fun.equals("oraLibera")) {
+                out.println(mostrareOraLibera(JSONMan));
             }
             else if (fun.equals("elencoPre")){
                 String account = request.getParameter("utente");

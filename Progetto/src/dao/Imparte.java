@@ -9,7 +9,7 @@ public class Imparte {
         d=doc;
         corso=c;
     }
-    public Docente getDocente(){
+    public Docente getD(){
         return d;
     }
     public ArrayList<Corso> getCorso(){

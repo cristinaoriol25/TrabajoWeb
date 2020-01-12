@@ -23,6 +23,7 @@ CREATE TABLE Imparte(
     CONSTRAINT p_imp PRIMARY KEY (nome, cognome, corso)
 );
 CREATE TABLE Prenotazione(
+    id INT NOT NULL AUTO_INCREMENT,
     usuario VARCHAR(20),
     nome    VARCHAR(20),
     cognome VARCHAR(20),
@@ -32,5 +33,5 @@ CREATE TABLE Prenotazione(
     stato VARCHAR(10) NOT NULL CHECK (stato='ATTIVA' OR stato='EFFETTUATA' OR stato='CANCELLATA'),
     CONSTRAINT f_preimp FOREIGN KEY (nome, cognome, corso) REFERENCES Imparte(nome, cognome, corso),
     CONSTRAINT f_impus FOREIGN KEY (usuario) REFERENCES Utente(account),
-    CONSTRAINT p_pre PRIMARY KEY (usuario, giorno, ora)
+    CONSTRAINT p_pre PRIMARY KEY (id)
 );
