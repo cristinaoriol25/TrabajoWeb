@@ -184,7 +184,7 @@ public class DAO {
             Utente u = p.getU();
             Docente d = p.getD();
             Corso c = p.getC();
-            st.executeUpdate("INSERT INTO `Prenotazione`(`usuario`, `nome`, `cognome`, `corso`, `giorno`, `ora`, `stato`) VALUES ('"+u.getUser()+"','"+d.getNome()+"','"+d.getCognome()+"','"+p.getGiorno()+"',"+p.getOra()+",'"+p.getStato()+"');");
+            st.executeUpdate("INSERT INTO Prenotazione(`usuario`, `nome`, `cognome`, `corso`, `giorno`, `ora`, `stato`) VALUES ('"+u.getUser()+"','"+d.getNome()+"','"+d.getCognome()+"','"+c.getTitulo()+"','"+p.getGiorno()+"',"+p.getOra()+",'"+p.getStato()+"');");
 
         } catch (SQLException e) {
             System.out.println(e.getMessage());

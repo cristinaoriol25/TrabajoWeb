@@ -36,17 +36,16 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="o in ore">
-                    <td>{{o}}</td>
-                    <td v-for="g in giorni">
-                        <div v-for="c in inCelda(g,o)">
-                            <div v-for="k in c.libres">
-                                <h4>{{k.d.nome}} {{k.d.cognome}}</h4>
-                                <div v-for="v in k.corso">{{v.titulo}} <input type="checkbox" :value="g+9+o+9+k.d.nome+9+k.d.cognome+9+v.titulo" v-model="checked"> </div>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
+                    <tr v-for="i in 4">
+                            <td>{{ore[i-1]}}</td>
+                            <td v-for="j in 5">
+                                <div v-for="k in (celde[(i-1)*4 +j-1]).libres">
+                                    <h4>{{k.d.nome}} {{k.d.cognome}}</h4>
+                                    <div v-for="v of k.corso">{{v.titulo}} <input v-if="!admin" type="checkbox" :value="giorni[j-1]+9+ore[i-1]+9+k.d.nome+9+k.d.cognome+9+v.titulo" v-model="checked"> </div>
+                                </div>
+                            </td>
+                    </tr>
+                </div>
             </tbody>
         </table>
         <p><button v-on:click="prenotare">PRENOTARE</button></p>
@@ -197,14 +196,18 @@
                 {{a.d.cognome}}, {{a.d.nome}}
             </h4>
                 <table>
-                    <tr>
-                        <th>Titolo</th>
-                        <th>Rimuoveri</th>
-                    </tr>
-                    <tr v-for="c in a.corso">
-                        <td>{{c.titulo}}</td>
-                        <td><button v-on:click="rimAssoc(a.d,c)">X</button></td>
-                    </tr>
+                    <thead>
+                        <tr>
+                            <th>Titolo</th>
+                            <th>Rimuoveri</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="c in a.corso">
+                            <td>{{c.titulo}}</td>
+                            <td><button v-on:click="rimAssoc(a.d,c)">X</button></td>
+                        </tr>
+                    </tbody>
                 </table>
 
         </div>
@@ -222,10 +225,8 @@
             account : '',
             pass : '',
             link : '/Progetto/ServletController',
-
             mostrareLog : true,
             admin : false,
-            celdas : [],
             elencoPre : [],
             mostrareElenPre : false,
             erroreConn : false,
@@ -242,7 +243,8 @@
             associzioni: [],
             ore: [15,16,17,18],
             giorni: ["LUNEDI","MARTEDI","MERCOLEDI","GIOVEDI","VENERDI"],
-            checked: []
+            checked: [],
+            celde: []
 
         },
         computed:{
@@ -264,16 +266,25 @@
         },
         methods:{
             inCelda: function (g,o) {
-                return this.celdas.filter(function (item) {
+                return this.celde.filter(function (item) {
                     return item.giorno === g && item.ora === o;
                 })
             },
             getCeldas:function() {
                 var self = this;
                 $.post(this.link, {azione: "oraLibera", utente: this.account}, function (data) {
-                    self.celdas = data;
+                    self.celde = data;
+                    console.log(data);
                 });
-                console.log("hola" + self.celdas.length);
+                var celde = [];
+                for (var o of self.ore){
+                    for (var g of self.giorni){
+                        console.log(o);
+                        console.log(g);
+                        celde.push(self.inCelda(g,o));
+                    }
+                }
+                self.celde = celde;
             },
             getDocenti:function() {
                 var self = this;
@@ -402,9 +413,32 @@
                 $.post(this.link, {azione: "disdire", pre: JSON.stringify(p)});
                 p.stato = "CANCELLATA";
             },
-            prenotare:function() {
+
+            sleep:function(milliseconds) {
+                var start = new Date().getTime();
+                for (var i = 0; i < 1e7; i++) {
+                    if ((new Date().getTime() - start) > milliseconds){
+                        break;
+                    }
+                }
+            },
+        prenotare:function() {
                 var self = this;
-                console.log("Hay que hacerlo chavales" + this.checked);
+                var pre = [];
+                for (var c of self.checked){
+                    var stringe = c.split("9");
+                    var doc = {nome: stringe[2], cognome: stringe[3]};
+                    var utente = {user: self.account, pass: self.pass, admin: self.admin};
+                    var corso = {titulo: stringe[4]};
+                    var p = {ora: stringe[1], giorno: stringe[0], d: doc, c: corso, u: utente, stato: "ATTIVA"};
+                    pre.push(p);
+                }
+                console.log(pre);
+                $.post(this.link, {azione: "prenotare", prenotazioni: JSON.stringify(pre)});
+                await sleep(500);
+                self.getCeldas();
+                self.attivi = self.attivi.concat(pre);
+                self.checked = [];
             },
             enviare:function(){
                 var self = this;

@@ -1,5 +1,6 @@
 package myServlet;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import dao.*;
 import myBeans.JSONManager;
 
@@ -10,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.List;
 
 import static dao.DAO.*;
 
@@ -135,6 +137,12 @@ public class ServletController extends javax.servlet.http.HttpServlet {
             else if (fun.equals("disdire")){
                 Prenotazione p = JSONMan.parseJson(request.getParameter("pre"), Prenotazione.class);
                 disidire(p);
+            }
+            else if (fun.equals("prenotare")){
+                List<Prenotazione> pre = JSONMan.parseJson(request.getParameter("prenotazioni"), new TypeReference<List<Prenotazione>>(){});
+                for (Prenotazione p : pre){
+                    prenotare(p);
+                }
             }
             else {
                 out.println("Accion inexistente");
