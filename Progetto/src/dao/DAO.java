@@ -73,10 +73,14 @@ public class DAO {
                 System.out.println("Connected to the database ripetizioni");
             }
             Statement st = conn1.createStatement();
-
-            st.executeUpdate("INSERT INTO `Docente` (`nome`, `cognome`, `attiva`) VALUES ('" + d.getNome() + "', '" +
-                    d.getCognome() + "', '1');");
-
+            ResultSet r= st.executeQuery("select * from Docente where nome='"+d.getNome()+"'and cognome='"+d.getCognome()+"';");
+            if(r.next()) {
+                st.executeUpdate("update Imparte where nome='"+d.getNome()+"'and cognome='"+d.getCognome()+"' set attiva=1");
+            }
+            else{
+                st.executeUpdate("INSERT INTO `Docente` (`nome`, `cognome`, `attiva`) VALUES ('" + d.getNome() + "', '" +
+                        d.getCognome() + "', '1');");
+            }
 
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -99,9 +103,15 @@ public class DAO {
                 System.out.println("Connected to the database ripetizioni");
             }
             Statement st = conn1.createStatement();
+            ResultSet r= st.executeQuery("select * from Corso where titulo='"+c.getTitulo()+"';");
+            if(r.next()) {
+                st.executeUpdate("update Imparte where titulo='"+c.getTitulo()+"' set attiva=1");
+            }
+            else{
+                st.executeUpdate("INSERT INTO `Corso` (`titulo`, `attiva`) VALUES ('" +
+                        c.getTitulo() + "', '1');");
+            }
 
-            st.executeUpdate("INSERT INTO `Corso` (`titulo`, `attiva`) VALUES ('" +
-                    c.getTitulo() + "', '1');");
 
 
         } catch (SQLException e) {
