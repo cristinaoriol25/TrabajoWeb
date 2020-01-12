@@ -119,8 +119,12 @@ public class ServletController extends javax.servlet.http.HttpServlet {
                 Prenotazione p = JSONMan.parseJson(request.getParameter("pre"), Prenotazione.class);
                 effetuata(p);
             }
+            else if (fun.equals("disdire")){
+                Prenotazione p = JSONMan.parseJson(request.getParameter("pre"), Prenotazione.class);
+                disidire(p);
+            }
             else {
-                    out.println("Accion inexistente");
+                out.println("Accion inexistente");
             }
         } catch (Exception e) {
             e.printStackTrace();
