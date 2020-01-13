@@ -23,8 +23,8 @@ public class ServletController extends javax.servlet.http.HttpServlet {
     private  String mostrareOraLibera(JSONManager JSONMan) {
         ArrayList<Celda> celdas = new ArrayList<>();
         String[] giorni = {"LUNEDI","MARTEDI","MERCOLEDI","GIOVEDI","VENERDI"};
-        for (String g:giorni){
-            for (int i = 15; i < 19; i++) {
+        for (int i = 15; i < 19; i++){
+            for (String g:giorni) {
                 celdas.add(oraLibera(g, i));
             }
         }
@@ -136,7 +136,7 @@ public class ServletController extends javax.servlet.http.HttpServlet {
             }
             else if (fun.equals("disdire")){
                 Prenotazione p = JSONMan.parseJson(request.getParameter("pre"), Prenotazione.class);
-                disidire(p);
+                disdire(p);
             }
             else if (fun.equals("prenotare")){
                 List<Prenotazione> pre = JSONMan.parseJson(request.getParameter("prenotazioni"), new TypeReference<List<Prenotazione>>(){});

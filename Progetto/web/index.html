@@ -39,7 +39,7 @@
                     <tr v-for="i in 4">
                             <td>{{ore[i-1]}}</td>
                             <td v-for="j in 5">
-                                <div v-for="k in (celde[(i-1)*4 +j-1]).libres">
+                                <div v-for="k in (celde[(i-1)*5 +j-1]).libres">
                                     <h4>{{k.d.nome}} {{k.d.cognome}}</h4>
                                     <div v-for="v of k.corso">{{v.titulo}} <input v-if="!admin" type="checkbox" :value="giorni[j-1]+9+ore[i-1]+9+k.d.nome+9+k.d.cognome+9+v.titulo" v-model="checked"> </div>
                                 </div>
@@ -274,13 +274,10 @@
                 var self = this;
                 $.post(this.link, {azione: "oraLibera", utente: this.account}, function (data) {
                     self.celde = data;
-                    console.log(data);
                 });
                 var celde = [];
                 for (var o of self.ore){
                     for (var g of self.giorni){
-                        console.log(o);
-                        console.log(g);
                         celde.push(self.inCelda(g,o));
                     }
                 }
@@ -356,6 +353,7 @@
                         }
                         self.corso = '';
                     });
+                    self.getCeldas();
                 }
             },
 
@@ -367,7 +365,7 @@
                 alert( c.titulo +" ha stato rimosso.");
                 self.elencoCorsi = self.elencoCorsi.filter( el => el !== c );
                 self.getAssoc();
-
+                self.getCeldas();
             },
 
             nuovaAssoc:function(d,c){
@@ -401,17 +399,20 @@
                 });
                 self.getAssoc();
                 alert("Associazione rimossa.");
+                self.getCeldas();
             },
 
             effettuare:function(p){
                 var self = this;
                 $.post(this.link, {azione: "effettuare", pre: JSON.stringify(p)});
                 p.stato = "EFFETTUATA";
+                self.getCeldas();
             },
             disdire:function(p){
                 var self = this;
                 $.post(this.link, {azione: "disdire", pre: JSON.stringify(p)});
                 p.stato = "CANCELLATA";
+                self.getCeldas();
             },
             prenotare:function() {
                 var self = this;
@@ -423,11 +424,11 @@
                     var corso = {titulo: stringe[4]};
                     var p = {ora: stringe[1], giorno: stringe[0], d: doc, c: corso, u: utente, stato: "ATTIVA"};
                     pre.push(p);
+                    self.elencoPre.push(p);
                 }
                 console.log(pre);
                 $.post(this.link, {azione: "prenotare", prenotazioni: JSON.stringify(pre)});
                 self.getCeldas();
-                self.attivi = self.attivi.concat(pre);
                 self.checked = [];
             },
             enviare:function(){

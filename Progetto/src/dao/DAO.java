@@ -145,6 +145,7 @@ public class DAO {
                 p=s1.executeQuery("SELECT COUNT(*) FROM Prenotazione where nome='" +d.getNome()+"' and cognome='"+d.getCognome()+"' and giorno='"+g+"' and ora="+o+" and stato='ATTIVA';");
                 p.next();
                 if(p.getInt("COUNT(*)")==0){
+                    System.out.println(g+" "+o);
                     ArrayList<Corso> c=new ArrayList<Corso>();
                     p=s1.executeQuery("SELECT corso from Imparte where nome='" +d.getNome()+"' and cognome='"+d.getCognome()+"';");
                     while(p.next()){
@@ -262,7 +263,7 @@ public class DAO {
 
     }
 
-    public static void disidire(Prenotazione p){
+    public static void disdire(Prenotazione p){
         Connection conn1= null;
         try {
             conn1 = DriverManager.getConnection(url1, user, password);
@@ -270,7 +271,7 @@ public class DAO {
                 System.out.println("Connected to the database ripetizioni");
             }
             Statement st = conn1.createStatement();
-            st.executeUpdate("UPDATE 'Prenotazione' where usuario='"+p.getU().getUser()+"' and ora="+p.getOra()+" and giorno='"+p.getGiorno()+"' set 'stato'='CANCELLATA'");
+            st.executeUpdate("UPDATE Prenotazione  set stato='CANCELLATA' where usuario='"+p.getU().getUser()+"' and ora="+p.getOra()+" and giorno='"+p.getGiorno()+"'");
 
         } catch (SQLException e) {
             System.out.println(e.getMessage());
