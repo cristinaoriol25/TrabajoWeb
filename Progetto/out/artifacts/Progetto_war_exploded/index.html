@@ -6,8 +6,6 @@
     <meta http-equiv="Cache-Control" content="no-store" />
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script type="text/javascript" src="myScript.js"></script>
-
 </head>
 <body>
 
@@ -21,9 +19,10 @@
             <input type="password" v-model="pass" required></p>
         <p><button v-on:click="enviare">OK</button></p>
     </div>
+    <span v-if="erroreConn" > Utente o password sbagliato.</span>
 
-    <div v-if="mostrareElenPre" >
-        <h2>Nuova Prenotazione</h2>
+    <div>
+        <h2>Orario di prenotazioni</h2>
         <table>
             <thead>
                 <tr>
@@ -41,16 +40,17 @@
                             <td v-for="j in 5">
                                 <div v-for="k in (celde[(i-1)*5 +j-1]).libres">
                                     <h4>{{k.d.nome}} {{k.d.cognome}}</h4>
-                                    <div v-for="v of k.corso">{{v.titulo}} <input v-if="!admin" type="checkbox" :value="giorni[j-1]+9+ore[i-1]+9+k.d.nome+9+k.d.cognome+9+v.titulo" v-model="checked"> </div>
+                                    <div v-for="v of k.corso">{{v.titulo}} <input v-if="!admin && !mostrareLog" type="checkbox" :value="giorni[j-1]+9+ore[i-1]+9+k.d.nome+9+k.d.cognome+9+v.titulo" v-model="checked"> </div>
                                 </div>
                             </td>
                     </tr>
                 </div>
             </tbody>
         </table>
-        <p><button v-on:click="prenotare">PRENOTARE</button></p>
-        <span>Checked: {{checked}}</span>
+        <p><button v-if="!admin && !mostrareLog" v-on:click="prenotare">PRENOTARE</button></p>
+    </div>
 
+    <div v-if="mostrareElenPre">
         <h2>I miei prenotazioni</h2>
         <h3>Attivi:</h3>
         <div v-if="attivi.length===0">Non c'è nessuna prenotazione attivi.</div>
@@ -65,7 +65,7 @@
                 <th v-if="!admin">Effettuare</th>
                 <th>Disdire</th>
             </tr>
-            <tr v-for="p in attivi":key="p.stato">
+            <tr v-for="p in attivi">
                  <td v-if="admin" >{{p.u.user}}</td>
                 <td>{{p.ora}}</td>
                 <td>{{p.giorno}}</td>
@@ -90,7 +90,7 @@
                 <th>Corso</th>
                 <th>Disdire</th>
             </tr>
-            <tr v-for="p in effettuati":key="p.stato">
+            <tr v-for="p in effettuati">
                 <td v-if="admin">{{p.u.user}}</td>
                 <td>{{p.ora}}</td>
                 <td>{{p.giorno}}</td>
@@ -113,7 +113,7 @@
                 <th>Nome</th>
                 <th>Corso</th>
             </tr>
-            <tr v-for="p in disdeti":key="p.stato">
+            <tr v-for="p in disdeti">
                 <td v-if="admin">{{p.u.user}}</td>
                 <td>{{p.ora}}</td>
                 <td>{{p.giorno}}</td>
@@ -126,9 +126,7 @@
 
 
     </div>
-    <div v-if="erroreConn" >
-        Utente o password sbagliato.
-    </div>
+
 
     <div v-if="admin">
         <h2>Impostazioni </h2>
@@ -218,7 +216,6 @@
 
 </div>
 <script>
-
     var app = new Vue ({
         el: '#app',
         data: {
@@ -313,9 +310,6 @@
                 self.erroreDocCognome = (this.cognome == "");
                 if (!self.erroreDocNome && !self.erroreDocCognome) {
                     $.post(this.link, {azione: "nuovoDoc", nome: this.nome, cognome: this.cognome}, function (data) {
-                        console.log(self.elencoDoc.includes(data));
-                        console.log(data);
-                        console.log(self.elencoDoc);
                         if (!(self.elencoDoc.includes(data))) {
                             alert(self.nome + " " + self.cognome + " ha stato inserito.");
                             self.elencoDoc.push(JSON.parse(data));
@@ -325,20 +319,19 @@
                         }
                         self.nome = '';
                         self.cognome = '';
+                        self.getCeldas();
                     });
                 }
 
             },
             rimDoc:function(d){
                 var self = this;
-                $.post(this.link, {azione: "rimDoc", docente: JSON.stringify(d)});
-                alert( d.nome  + " "+ d.cognome +" ha stato rimosso.");
-                self.elencoDoc = self.elencoDoc.filter( el => el !== d );
-                self.getAssoc();
-
-
+                $.post(this.link, {azione: "rimDoc", docente: JSON.stringify(d)}, function () {
+                    alert( d.nome  + " "+ d.cognome +" ha stato rimosso.");
+                    self.elencoDoc = self.elencoDoc.filter( el => el !== d );
+                    self.getAssoc();
+                }, "text");
             },
-
             nuovoCor:function(){
                 var self = this;
                 self.erroreCorso = (this.corso == "");
@@ -352,20 +345,18 @@
                             alert("Il corso " + self.corso + " è già registrato.");
                         }
                         self.corso = '';
+                        self.getCeldas();
                     });
-                    self.getCeldas();
                 }
             },
 
             rimCorso:function(c){
                 var self = this;
                 $.post(this.link, {azione: "rimCorso", corso: JSON.stringify(c)} , function(data) {
-
-                });
-                alert( c.titulo +" ha stato rimosso.");
-                self.elencoCorsi = self.elencoCorsi.filter( el => el !== c );
-                self.getAssoc();
-                self.getCeldas();
+                    alert( c.titulo +" ha stato rimosso.");
+                    self.elencoCorsi = self.elencoCorsi.filter( el => el !== c );
+                    self.getAssoc();
+                }, "text");
             },
 
             nuovaAssoc:function(d,c){
@@ -387,7 +378,8 @@
                         }
                         if (!trovato)
                             self.associzioni.push(JSON.parse(data));
-                    });
+                        self.getCeldas();
+                    }, "text");
 
                 }
             },
@@ -395,24 +387,26 @@
             rimAssoc:function(d,c){
                 var self = this;
                 $.post(this.link, {azione: "rimAsso", corso: JSON.stringify(c), docente: JSON.stringify(d)} , function(data) {
+                    self.getAssoc();
+                    self.getCeldas();
+                    alert("Associazione rimossa.");
+                }, "text");
 
-                });
-                self.getAssoc();
-                alert("Associazione rimossa.");
-                self.getCeldas();
             },
 
             effettuare:function(p){
                 var self = this;
-                $.post(this.link, {azione: "effettuare", pre: JSON.stringify(p)});
+                $.post(this.link, {azione: "effettuare", pre: JSON.stringify(p)}, function(){
+                    self.getCeldas();
+                }, "text");
                 p.stato = "EFFETTUATA";
-                self.getCeldas();
             },
             disdire:function(p){
                 var self = this;
-                $.post(this.link, {azione: "disdire", pre: JSON.stringify(p)});
+                $.post(this.link, {azione: "disdire", pre: JSON.stringify(p)},function(){
+                    self.getCeldas();
+                }, "text");
                 p.stato = "CANCELLATA";
-                self.getCeldas();
             },
             prenotare:function() {
                 var self = this;
@@ -426,10 +420,10 @@
                     pre.push(p);
                     self.elencoPre.push(p);
                 }
-                console.log(pre);
-                $.post(this.link, {azione: "prenotare", prenotazioni: JSON.stringify(pre)});
-                self.getCeldas();
-                self.checked = [];
+                $.post(this.link, {azione: "prenotare", prenotazioni: JSON.stringify(pre)}, function () {
+                    self.getCeldas();
+                    self.checked = [];
+                }, "text");
             },
             enviare:function(){
                 var self = this;
@@ -464,10 +458,9 @@
 
                 });
             }
-
-
-
-
+        },
+        mounted(){
+            this.getCeldas();
         }
     });
 

@@ -145,7 +145,6 @@ public class DAO {
                 p=s1.executeQuery("SELECT COUNT(*) FROM Prenotazione where nome='" +d.getNome()+"' and cognome='"+d.getCognome()+"' and giorno='"+g+"' and ora="+o+" and stato='ATTIVA';");
                 p.next();
                 if(p.getInt("COUNT(*)")==0){
-                    System.out.println(g+" "+o);
                     ArrayList<Corso> c=new ArrayList<Corso>();
                     p=s1.executeQuery("SELECT corso from Imparte where nome='" +d.getNome()+"' and cognome='"+d.getCognome()+"';");
                     while(p.next()){
@@ -426,7 +425,6 @@ public class DAO {
             Docente d=a.getD();
             Corso c=a.getCorso();
             Statement st = conn1.createStatement();
-            System.out.println("Estoy en la base.");
 
             ResultSet rs = st.executeQuery("SELECT * FROM Imparte WHERE nome='"+d.getNome()+"' and cognome='"+d.getCognome()+"' and corso='"+c.getTitulo()+"';");
             if (rs.next()) {

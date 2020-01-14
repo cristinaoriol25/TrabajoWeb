@@ -96,7 +96,6 @@ public class ServletController extends javax.servlet.http.HttpServlet {
             }
             else if (fun.equals("elencoAsso")){
                 ArrayList<Imparte> i = mostrareAsso();
-                System.out.println(i.size());
                 out.println(JSONMan.serializeJson(i));
             }
             else if (fun.equals("elencoCor")){
@@ -139,7 +138,7 @@ public class ServletController extends javax.servlet.http.HttpServlet {
                 disdire(p);
             }
             else if (fun.equals("prenotare")){
-                List<Prenotazione> pre = JSONMan.parseJson(request.getParameter("prenotazioni"), new TypeReference<List<Prenotazione>>(){});
+                Prenotazione[] pre = JSONMan.parseJson(request.getParameter("prenotazioni"), Prenotazione[].class);
                 for (Prenotazione p : pre){
                     prenotare(p);
                 }

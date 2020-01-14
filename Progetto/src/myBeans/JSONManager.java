@@ -22,12 +22,6 @@ public class JSONManager {
         return objectMapper.readValue(json, targetType);
     }
 
-    // Traduzione da stringa JSON a oggetto Java di tipo generico T
-    public <T> T parseJson(String json, TypeReference<T> targetType) throws Exception {
-        objectMapper.configure(SerializationFeature.INDENT_OUTPUT, true);
-        //objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
-        return objectMapper.readValue(json, targetType);
-    }
 
     //Traduzione da oggetto Java di tipo generico T a stringa JSON
     public <T> String serializeJson(T o) {
