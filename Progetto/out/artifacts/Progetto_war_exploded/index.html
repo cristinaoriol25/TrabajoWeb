@@ -40,14 +40,14 @@
                 <td v-for="j in 5">
                     <div v-for="k in (celde[(i-1)*5 +j-1]).libres">
                         <h4>{{k.d.nome}} {{k.d.cognome}}</h4>
-                        <div v-for="v of k.corso">{{v.titulo}} <input v-if="!admin && !mostrareLog" type="checkbox" :value="giorni[j-1]+9+ore[i-1]+9+k.d.nome+9+k.d.cognome+9+v.titulo" v-model="checked"> </div>
+                        <div v-for="v of k.corso">{{v.titulo}} <input v-if="!mostrareLog" type="checkbox" :value="giorni[j-1]+9+ore[i-1]+9+k.d.nome+9+k.d.cognome+9+v.titulo" v-model="checked"> </div>
                     </div>
                 </td>
             </tr>
     </div>
     </tbody>
     </table>
-    <p><button v-if="!admin && !mostrareLog" v-on:click="prenotare">PRENOTARE</button></p>
+    <p><button v-if="!mostrareLog" v-on:click="prenotare">PRENOTARE</button></p>
 </div>
 
 <div v-if="mostrareElenPre">
@@ -415,19 +415,21 @@
             prenotare:function() {
                 var self = this;
                 var pre = [];
-                for (var c of self.checked){
-                    var stringe = c.split("9");
-                    var doc = {nome: stringe[2], cognome: stringe[3]};
-                    var utente = {user: self.account, pass: self.pass, admin: self.admin};
-                    var corso = {titulo: stringe[4]};
-                    var p = {ora: stringe[1], giorno: stringe[0], d: doc, c: corso, u: utente, stato: "ATTIVA"};
-                    pre.push(p);
-                    self.elencoPre.push(p);
+                if (self.checked.length > 0) {
+                    for (var c of self.checked){
+                        var stringe = c.split("9");
+                        var doc = {nome: stringe[2], cognome: stringe[3]};
+                        var utente = {user: self.account, pass: self.pass, admin: self.admin};
+                        var corso = {titulo: stringe[4]};
+                        var p = {ora: stringe[1], giorno: stringe[0], d: doc, c: corso, u: utente, stato: "ATTIVA"};
+                        pre.push(p);
+                        self.elencoPre.push(p);
+                    }
+                    $.post(this.link, {azione: "prenotare", prenotazioni: JSON.stringify(pre)}, function () {
+                        self.getCeldas();
+                        self.checked = [];
+                    }, "text");
                 }
-                $.post(this.link, {azione: "prenotare", prenotazioni: JSON.stringify(pre)}, function () {
-                    self.getCeldas();
-                    self.checked = [];
-                }, "text");
             },
             enviare:function(){
                 var self = this;

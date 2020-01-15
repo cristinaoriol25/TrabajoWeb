@@ -92,7 +92,7 @@ public class DAO {
             Statement st = conn1.createStatement();
             ResultSet r= st.executeQuery("select * from Docente where nome='"+d.getNome()+"'and cognome='"+d.getCognome()+"';");
             if(r.next()) {
-                st.executeUpdate("update Imparte set attiva=1 where nome='"+d.getNome()+"'and cognome='"+d.getCognome()+"' ;");
+                st.executeUpdate("update Docente set attiva=1 where nome='"+d.getNome()+"'and cognome='"+d.getCognome()+"' ;");
             }
             else{
                 st.executeUpdate("INSERT INTO `Docente` (`nome`, `cognome`, `attiva`) VALUES ('" + d.getNome() + "', '" +
@@ -122,7 +122,7 @@ public class DAO {
             Statement st = conn1.createStatement();
             ResultSet r= st.executeQuery("select * from Corso where titulo='"+c.getTitulo()+"';");
             if(r.next()) {
-                st.executeUpdate("update Imparte where titulo='"+c.getTitulo()+"' set attiva=1");
+                st.executeUpdate("update Corso set attiva=1 where titulo='"+c.getTitulo()+"';");
             }
             else{
                 st.executeUpdate("INSERT INTO `Corso` (`titulo`, `attiva`) VALUES ('" +
