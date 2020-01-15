@@ -21,6 +21,7 @@ public class DAO {
 
     public static boolean correctlog(String username, String pass) {
         Connection conn1 = null;
+        boolean ok = false;
         try {
             conn1 = DriverManager.getConnection(url1, user, password);
             if (conn1 != null) {
@@ -30,19 +31,29 @@ public class DAO {
 
             ResultSet rs = st.executeQuery("SELECT COUNT(*) FROM Utente WHERE account='" + username + "' and pass='" + pass + "';");
             rs.next();
-
-            return (rs.getInt("COUNT(*)") > 0);
+            ok = (rs.getInt("COUNT(*)") > 0);
 
         } catch (SQLException e) {
             System.out.println(e.getMessage());
 
-            return false;
+        }  finally {
+            if (conn1 != null) {
+                try {
+                    conn1.close();
+                } catch (SQLException e2) {
+                    System.out.println(e2.getMessage());
+                    ok = false;
+                }
+            }
         }
+
+        return ok;
 
     }
 
     public static boolean getRuolo(String username) {
         Connection conn1 = null;
+        boolean role = false;
         try {
             conn1 = DriverManager.getConnection(url1, user, password);
             if (conn1 != null) {
@@ -52,17 +63,23 @@ public class DAO {
 
             ResultSet rs = st.executeQuery("SELECT * FROM Utente WHERE account='" + username + "';");
             rs.next();
-            Boolean role = rs.getBoolean("admin");
-            return role;
+            role = rs.getBoolean("admin");
 
         } catch (SQLException e) {
             System.out.println(e.getMessage());
 
-            return false;
-
+        }  finally {
+            if (conn1 != null) {
+                try {
+                    conn1.close();
+                } catch (SQLException e2) {
+                    System.out.println(e2.getMessage());
+                    role = false;
+                }
+            }
         }
 
-
+        return role;
     }
 
     public static void creare(Docente d) {
@@ -112,10 +129,9 @@ public class DAO {
                         c.getTitulo() + "', '1');");
             }
 
-
-
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+
         } finally {
             if (conn1 != null) {
                 try {
@@ -146,13 +162,17 @@ public class DAO {
                 p.next();
                 if(p.getInt("COUNT(*)")==0){
                     ArrayList<Corso> c=new ArrayList<Corso>();
-                    p=s1.executeQuery("SELECT corso from Imparte where nome='" +d.getNome()+"' and cognome='"+d.getCognome()+"';");
+                    p=s1.executeQuery("SELECT corso from Imparte where nome='" +d.getNome()+"' and cognome='"+d.getCognome()+"' and attiva=1;");
+                    boolean has = false;
                     while(p.next()){
+                        has = true;
                         Corso co=new Corso(p.getString("corso"));
                         c.add(co);
                     }
-                    Imparte i=new Imparte(d, c);
-                    lib.add(i);
+                    if (has) {
+                        Imparte i=new Imparte(d, c);
+                        lib.add(i);
+                    }
                 }
             }
 
@@ -189,6 +209,14 @@ public class DAO {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
 
+        }  finally {
+            if (conn1 != null) {
+                try {
+                    conn1.close();
+                } catch (SQLException e2) {
+                    System.out.println(e2.getMessage());
+                }
+            }
         }
     }
 
@@ -221,6 +249,14 @@ public class DAO {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
 
+        }  finally {
+            if (conn1 != null) {
+                try {
+                    conn1.close();
+                } catch (SQLException e2) {
+                    System.out.println(e2.getMessage());
+                }
+            }
         }
 
         return out;
@@ -256,6 +292,14 @@ public class DAO {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
 
+        }  finally {
+            if (conn1 != null) {
+                try {
+                    conn1.close();
+                } catch (SQLException e2) {
+                    System.out.println(e2.getMessage());
+                }
+            }
         }
 
         return out;
@@ -275,6 +319,14 @@ public class DAO {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
 
+        }  finally {
+            if (conn1 != null) {
+                try {
+                    conn1.close();
+                } catch (SQLException e2) {
+                    System.out.println(e2.getMessage());
+                }
+            }
         }
 
     }
@@ -291,6 +343,14 @@ public class DAO {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
 
+        }  finally {
+            if (conn1 != null) {
+                try {
+                    conn1.close();
+                } catch (SQLException e2) {
+                    System.out.println(e2.getMessage());
+                }
+            }
         }
 
     }
@@ -461,7 +521,7 @@ public class DAO {
             Corso c=a.getCorso();
             Statement st = conn1.createStatement();
             st.executeUpdate("update Imparte set attiva=0 where nome='"+d.getNome()+"'and cognome='"+d.getCognome()+"' and corso='"+c.getTitulo()+"';");
-
+            st.executeUpdate("update Prenotazione set stato='CANCELLATA' where nome='"+d.getNome()+"'and cognome='"+d.getCognome()+"' and corso='"+c.getTitulo()+"';");
 
 
         } catch (SQLException e) {
