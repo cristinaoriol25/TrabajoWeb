@@ -7,8 +7,8 @@
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 </head>
-<body>
 
+<body>
 
 <div id="app" onload="getCeldas()">
     <div v-if="mostrareLog">
@@ -44,178 +44,170 @@
                         </div>
                     </td>
                 </tr>
-    </div>
             </tbody>
         </table>
 
-    <p><button v-if="!mostrareLog" v-on:click="prenotare">PRENOTARE</button></p>
-</div>
+        <p><button v-if="!mostrareLog" v-on:click="prenotare">PRENOTARE</button></p>
+    </div>
 
-<div v-if="mostrareElenPre">
-    <h2>I miei prenotazioni</h2>
-    <h3>Attivi:</h3>
-    <div v-if="attivi.length===0">Non c'è nessuna prenotazione attivi.</div>
-    <table>
-        <tr v-if="attivi.length!==0">
-            <th v-if="admin">Utente</th>
-            <th >Ora</th>
-            <th>Giorno</th>
-            <th>Cognome</th>
-            <th>Nome</th>
-            <th>Corso</th>
-            <th v-if="!admin">Effettuare</th>
-            <th>Disdire</th>
-        </tr>
-        <tr v-for="p in attivi">
-            <td v-if="admin" >{{p.u.user}}</td>
-            <td>{{p.ora}}</td>
-            <td>{{p.giorno}}</td>
-            <td>{{p.d.cognome}}</td>
-            <td>{{p.d.nome}}</td>
-            <td>{{p.c.titulo}}</td>
-            <td v-if="!admin"><button v-on:click="effettuare(p)">EFF</button></td>
-            <td><button v-on:click="disdire(p)">X</button></td>
-        </tr>
-    </table>
-
-
-    <h3>Effettuati:</h3>
-    <div v-if="effettuati.length===0">Non c'è nessuna prenotazione effettuati.</div>
-    <table v-if="effettuati.length!==0">
-        <tr>
-            <th v-if="admin">Utente</th>
-            <th>Ora</th>
-            <th>Giorno</th>
-            <th>Cognome</th>
-            <th>Nome</th>
-            <th>Corso</th>
-            <th>Disdire</th>
-        </tr>
-        <tr v-for="p in effettuati">
-            <td v-if="admin">{{p.u.user}}</td>
-            <td>{{p.ora}}</td>
-            <td>{{p.giorno}}</td>
-            <td>{{p.d.cognome}}</td>
-            <td>{{p.d.nome}}</td>
-            <td>{{p.c.titulo}}</td>
-            <td><button v-on:click="disdire(p)">X</button></td>
-        </tr>
-    </table>
-
-
-    <h3>Disdeti:</h3>
-    <div v-if="disdeti.length===0">Non c'è nessuna prenotazione disdeta.</div>
-    <table>
-        <tr v-if="disdeti.length!==0">
-            <th v-if="admin" >Utente</th>
-            <th>Ora</th>
-            <th>Giorno</th>
-            <th>Cognome</th>
-            <th>Nome</th>
-            <th>Corso</th>
-        </tr>
-        <tr v-for="p in disdeti">
-            <td v-if="admin">{{p.u.user}}</td>
-            <td>{{p.ora}}</td>
-            <td>{{p.giorno}}</td>
-            <td>{{p.d.cognome}}</td>
-            <td>{{p.d.nome}}</td>
-            <td>{{p.c.titulo}}</td>
-        </tr>
-    </table>
-
-
-
-</div>
-
-
-<div v-if="admin">
-    <h2>Impostazioni </h2>
-    <h3>Inserire docente</h3>
-
-    <p><label><b>Nome: </b></label>
-        <input type="text" v-model="nome"/>
-        <label  v-if="erroreDocNome"> Campo vuoto </label>
-    </p>
-    <p><label ><b>Cognome: </b></label>
-        <input type="text" v-model="cognome"/>
-        <label  v-if="erroreDocCogome"> Campo vuoto </label>
-    </p>
-    <p><button v-on:click="nuovoDoc">Submit</button></p>
-
-    <h3>Elenco di docenti.</h3>
-    <div v-if="elencoDoc.length===0">Non c'è nessun docente registrato.</div>
-    <table>
-        <tr v-if="elencoDoc.length!==0">
-            <th>Cognome</th>
-            <th>Nome</th>
-            <th>Rimuoveri</th>
-        </tr>
-        <tr v-for="d in elencoDoc">
-            <td>{{d.cognome}}</td>
-            <td>{{d.nome}}</td>
-            <td><button v-on:click="rimDoc(d)">X</button></td>
-        </tr>
-    </table>
-
-    <h3>Inserire corso</h3>
-    <p><label for="corso"><b>Corso: </b></label>
-        <input type="text" v-model="corso"/>
-        <label for="eCorso" v-if="erroreCorso"> Campo vuoto </label>
-    </p>
-    <p><button v-on:click="nuovoCor">Submit</button></p>
-
-    <h3>Elenco di corsi.</h3>
-    <div v-if="elencoCorsi.length===0">Non c'è nessun corso registrato.</div>
-    <table>
-        <tr v-if="elencoCorsi.length!==0">
-            <th>Titolo</th>
-            <th>Rimuoveri</th>
-        </tr>
-        <tr v-for="c in elencoCorsi">
-            <td>{{c.titulo}}</td>
-            <td><button v-on:click="rimCorso(c)">X</button></td>
-        </tr>
-    </table>
-
-    <h3>Nuova associazione.</h3>
-
-    <select v-model="docSelect">
-        <option v-for="d in elencoDoc" :value="d">{{d.cognome}} {{d.nome}}</option>
-    </select>
-
-    <select v-model="corSelect">
-        <option v-for="c in elencoCorsi" :value="c">{{c.titulo}}</option>
-    </select>
-    <p><button v-on:click="nuovaAssoc(docSelect,corSelect)">Submit</button></p>
-    <h3>Elenco di associazioni.</h3>
-    <div v-if="associzioni.length===0">Non c'è nessuna associazione registrata.</div>
-    <div v-for="a in associzioni">
-        <h4 >
-            {{a.d.cognome}}, {{a.d.nome}}
-        </h4>
-        <table>
-            <thead>
+    <div v-if="mostrareElenPre">
+        <h2>I miei prenotazioni</h2>
+        <h3>Attivi:</h3>
+        <div v-if="attivi.length===0">Non c'è nessuna prenotazione attivi.</div>
+        <table v-if="attivi.length!==0">
             <tr>
+                <th v-if="admin">Utente</th>
+                <th >Ora</th>
+                <th>Giorno</th>
+                <th>Cognome</th>
+                <th>Nome</th>
+                <th>Corso</th>
+                <th v-if="!admin">Effettuare</th>
+                <th>Disdire</th>
+            </tr>
+            <tr v-for="p in attivi">
+                <td v-if="admin" >{{p.u.user}}</td>
+                <td>{{p.ora}}</td>
+                <td>{{p.giorno}}</td>
+                <td>{{p.d.cognome}}</td>
+                <td>{{p.d.nome}}</td>
+                <td>{{p.c.titulo}}</td>
+                <td v-if="!admin"><button v-on:click="effettuare(p)">EFF</button></td>
+                <td><button v-on:click="disdire(p)">X</button></td>
+            </tr>
+        </table>
+
+
+        <h3>Effettuati:</h3>
+        <div v-if="effettuati.length===0">Non c'è nessuna prenotazione effettuati.</div>
+        <table v-if="effettuati.length!==0">
+            <tr>
+                <th v-if="admin">Utente</th>
+                <th>Ora</th>
+                <th>Giorno</th>
+                <th>Cognome</th>
+                <th>Nome</th>
+                <th>Corso</th>
+                <th>Disdire</th>
+            </tr>
+            <tr v-for="p in effettuati">
+                <td v-if="admin">{{p.u.user}}</td>
+                <td>{{p.ora}}</td>
+                <td>{{p.giorno}}</td>
+                <td>{{p.d.cognome}}</td>
+                <td>{{p.d.nome}}</td>
+                <td>{{p.c.titulo}}</td>
+                <td><button v-on:click="disdire(p)">X</button></td>
+            </tr>
+        </table>
+
+
+        <h3>Disdeti:</h3>
+        <div v-if="disdeti.length===0">Non c'è nessuna prenotazione disdeta.</div>
+        <table v-if="disdeti.length!==0">
+            <tr>
+                <th v-if="admin" >Utente</th>
+                <th>Ora</th>
+                <th>Giorno</th>
+                <th>Cognome</th>
+                <th>Nome</th>
+                <th>Corso</th>
+            </tr>
+            <tr v-for="p in disdeti">
+                <td v-if="admin">{{p.u.user}}</td>
+                <td>{{p.ora}}</td>
+                <td>{{p.giorno}}</td>
+                <td>{{p.d.cognome}}</td>
+                <td>{{p.d.nome}}</td>
+                <td>{{p.c.titulo}}</td>
+            </tr>
+        </table>
+    </div>
+
+
+    <div v-if="admin">
+        <h2>Impostazioni </h2>
+        <h3>Inserire docente</h3>
+
+        <p><label><b>Nome: </b></label>
+            <input type="text" v-model="nome"/>
+            <label  v-if="erroreDocNome"> Campo vuoto </label>
+        </p>
+        <p><label ><b>Cognome: </b></label>
+            <input type="text" v-model="cognome"/>
+            <label  v-if="erroreDocCognome"> Campo vuoto </label>
+        </p>
+        <p><button v-on:click="nuovoDoc">Submit</button></p>
+
+        <h3>Elenco di docenti.</h3>
+        <div v-if="elencoDoc.length===0">Non c'è nessun docente registrato.</div>
+        <table>
+            <tr v-if="elencoDoc.length!==0">
+                <th>Cognome</th>
+                <th>Nome</th>
+                <th>Rimuoveri</th>
+            </tr>
+            <tr v-for="d in elencoDoc">
+                <td>{{d.cognome}}</td>
+                <td>{{d.nome}}</td>
+                <td><button v-on:click="rimDoc(d)">X</button></td>
+            </tr>
+        </table>
+
+        <h3>Inserire corso</h3>
+        <p><label for="corso"><b>Corso: </b></label>
+            <input type="text" v-model="corso"/>
+            <label for="eCorso" v-if="erroreCorso"> Campo vuoto </label>
+        </p>
+        <p><button v-on:click="nuovoCor">Submit</button></p>
+
+        <h3>Elenco di corsi.</h3>
+        <div v-if="elencoCorsi.length===0">Non c'è nessun corso registrato.</div>
+        <table>
+            <tr v-if="elencoCorsi.length!==0">
                 <th>Titolo</th>
                 <th>Rimuoveri</th>
             </tr>
-            </thead>
-            <tbody>
-            <tr v-for="c in a.corso">
+            <tr v-for="c in elencoCorsi">
                 <td>{{c.titulo}}</td>
-                <td><button v-on:click="rimAssoc(a.d,c)">X</button></td>
+                <td><button v-on:click="rimCorso(c)">X</button></td>
             </tr>
-            </tbody>
         </table>
 
+        <h3>Nuova associazione.</h3>
+        <p v-if="erroreAssoc">Inserire tutti i campi</p>
+        <select v-model="docSelect">
+            <option v-for="d in elencoDoc" :value="d">{{d.cognome}} {{d.nome}}</option>
+        </select>
+
+        <select v-model="corSelect">
+            <option v-for="c in elencoCorsi" :value="c">{{c.titulo}}</option>
+        </select>
+        <p><button v-on:click="nuovaAssoc(docSelect,corSelect)">Submit</button></p>
+        <h3>Elenco di associazioni.</h3>
+        <div v-if="associzioni.length===0">Non c'è nessuna associazione registrata.</div>
+        <div v-for="a in associzioni">
+            <h4 >
+                {{a.d.cognome}}, {{a.d.nome}}
+            </h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Titolo</th>
+                        <th>Rimuoveri</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="c in a.corso">
+                        <td>{{c.titulo}}</td>
+                        <td><button v-on:click="rimAssoc(a.d,c)">X</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
-
-
-
 </div>
 
-</div>
 <script>
     var app = new Vue ({
         el: '#app',
@@ -229,11 +221,12 @@
             mostrareElenPre : false,
             erroreConn : false,
             erroreDocNome : false,
-            erroreDocCogome : false,
+            erroreDocCognome : false,
             nome : '',
             cognome : '',
             corso : '',
             erroreCorso : false,
+            erroreAssoc : false,
             elencoDoc : [],
             elencoCorsi : [],
             docSelect: '',
@@ -307,8 +300,8 @@
             },
             nuovoDoc:function(){
                 var self = this;
-                self.erroreDocNome = (this.nome == "")
-                self.erroreDocCognome = (this.cognome == "");
+                self.erroreDocNome = (this.nome === "");
+                self.erroreDocCognome = (this.cognome === "");
                 if (!self.erroreDocNome && !self.erroreDocCognome) {
                     $.post(this.link, {azione: "nuovoDoc", nome: this.nome, cognome: this.cognome}, function (data) {
                         if (!(self.elencoDoc.includes(data))) {
@@ -339,7 +332,7 @@
             },
             nuovoCor:function(){
                 var self = this;
-                self.erroreCorso = (this.corso == "");
+                self.erroreCorso = (this.corso === "");
                 if (!self.erroreCorso) {
                     $.post(this.link, {azione: "nuovoCor", corso: this.corso}, function (data) {
                         if (!(self.elencoCorsi.includes(data))) {
@@ -370,10 +363,9 @@
 
             nuovaAssoc:function(d,c){
                 var self = this;
-                self.erroreCorso = (c.titulo == "");
-                self.erroreDocNome = (d.nome == "");
-                self.erroreDocCognome = (d.cognome == "");
-                if (!self.erroreCorso && !self.erroreDocNome && !self.erroreDocCognome ) {
+                self.erroreAssoc = !c.hasOwnProperty('titulo') || !d.hasOwnProperty('nome') || !d.hasOwnProperty('cognome');
+
+                if (!self.erroreAssoc) {
                     $.post(this.link, {azione: "nuovaAssoc", corso: JSON.stringify(c), docente: JSON.stringify(d)} , function(data) {
                         alert("Associazione creata.");
                         // inserto il nuovo elemento nell'elenco senza chiamare al servLet una volta ancora
@@ -422,8 +414,11 @@
                 var self = this;
                 var risposta = confirm("Sei securo di volerlo disdire?");
                 if (risposta) {
+                    var eff = (p.stato === "EFFETTUATA");
                     $.post(this.link, {azione: "disdire", pre: JSON.stringify(p)},function(){
-                        self.getCeldas();
+                        if (!eff) {
+                            self.getCeldas();
+                        }
                     }, "text");
                     p.stato = "CANCELLATA";
                     alert("Prenotazione disdetta");
