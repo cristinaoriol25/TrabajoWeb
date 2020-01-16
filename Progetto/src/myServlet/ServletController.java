@@ -43,7 +43,7 @@ public class ServletController extends javax.servlet.http.HttpServlet {
         return JSONMan.serializeJson(prenotazioni);
 
     }
-
+    /*
     private String creareDoc(String nome, String cognome, JSONManager JSONMan){
         Docente doc = new Docente(nome, cognome);
         creare(doc);
@@ -52,8 +52,12 @@ public class ServletController extends javax.servlet.http.HttpServlet {
 
     private String creareCorso(String corso, JSONManager JSONMan){
         Corso c = new Corso(corso);
-        creare(c);
-        return JSONMan.serializeJson(c);
+        if (creare(c)) {
+            return JSONMan.serializeJson("1");
+        } else {
+            return JSONMan.serializeJson("0");
+        }
+
     }
 
     private String  creareAssoc(Corso c,Docente doc, JSONManager JSONMan){
@@ -64,6 +68,7 @@ public class ServletController extends javax.servlet.http.HttpServlet {
         arrayCorso.add(c);
         return JSONMan.serializeJson(new Imparte(doc,arrayCorso));
     }
+     */
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
@@ -104,7 +109,13 @@ public class ServletController extends javax.servlet.http.HttpServlet {
             else if (fun.equals("nuovoDoc")){
                 String nom = request.getParameter("nome");
                 String cog = request.getParameter("cognome");
-                out.println(JSONMan.serializeJson(creareDoc(nom,cog,JSONMan)));
+                Docente doc = new Docente(nom, cog);
+
+                if (creare(doc)) {
+                    out.println(JSONMan.serializeJson("1"));
+                } else {
+                    out.println(JSONMan.serializeJson("0"));
+                }
             }
             else if (fun.equals("rimDoc")){
                 Docente d = JSONMan.parseJson(request.getParameter("docente"), Docente.class);
@@ -112,7 +123,13 @@ public class ServletController extends javax.servlet.http.HttpServlet {
             }
             else if (fun.equals("nuovoCor")){
                 String cor = request.getParameter("corso");
-                out.println(JSONMan.serializeJson(creareCorso(cor,JSONMan)));
+                Corso c = new Corso(cor);
+
+                if (creare(c)) {
+                    out.println(JSONMan.serializeJson("1"));
+                } else {
+                    out.println(JSONMan.serializeJson("0"));
+                }
             }
             else if (fun.equals("rimCorso")){
                 Corso c = JSONMan.parseJson(request.getParameter("corso"), Corso.class);
@@ -121,7 +138,13 @@ public class ServletController extends javax.servlet.http.HttpServlet {
             else if (fun.equals("nuovaAssoc")){
                 Corso c = JSONMan.parseJson(request.getParameter("corso"), Corso.class);
                 Docente d = JSONMan.parseJson(request.getParameter("docente"), Docente.class);
-                out.println(JSONMan.serializeJson(creareAssoc(c,d,JSONMan)));
+                Associazione a = new Associazione(d,c);
+
+                if (creare(a)) {
+                    out.print("1");
+                } else {
+                    out.print("0");
+                }
             }
             else if (fun.equals("rimAsso")){
                 Corso c = JSONMan.parseJson(request.getParameter("corso"), Corso.class);

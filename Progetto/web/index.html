@@ -304,12 +304,15 @@
                 self.erroreDocCognome = (this.cognome === "");
                 if (!self.erroreDocNome && !self.erroreDocCognome) {
                     $.post(this.link, {azione: "nuovoDoc", nome: this.nome, cognome: this.cognome}, function (data) {
-                        if (!(self.elencoDoc.includes(data))) {
-                            alert(self.nome + " " + self.cognome + " ha stato inserito.");
-                            self.elencoDoc.push(JSON.parse(data));
-                        }
-                        else{
-                            alert(self.nome + " " + self.cognome +  " è già registrato.");
+                        switch (data) {
+                            case "1":
+                                alert(self.nome + " " + self.cognome + " ha stato inserito.");
+                                var d = {nome: self.nome, cognome: self.cognome};
+                                self.elencoDoc.push(d);//JSON.parse(c));
+                                break;
+                            case "0":
+                                alert(self.nome + " " + self.cognome +  " è già registrato.");
+                                break;
                         }
                         self.nome = '';
                         self.cognome = '';
@@ -335,12 +338,15 @@
                 self.erroreCorso = (this.corso === "");
                 if (!self.erroreCorso) {
                     $.post(this.link, {azione: "nuovoCor", corso: this.corso}, function (data) {
-                        if (!(self.elencoCorsi.includes(data))) {
-                            alert("Il corso " + self.corso + " ha stato inserito.");
-                            self.elencoCorsi.push(JSON.parse(data));
-                        }
-                        else{
-                            alert("Il corso " + self.corso + " è già registrato.");
+                        switch (data) {
+                            case "1":
+                                alert("Il corso " + self.corso + " ha stato inserito.");
+                                var c = {titulo: self.corso};
+                                self.elencoCorsi.push(c);//JSON.parse(c));
+                                break;
+                            case "0":
+                                alert("Il corso " + self.corso + " è già registrato.");
+                                break;
                         }
                         self.corso = '';
                     });
@@ -367,7 +373,16 @@
 
                 if (!self.erroreAssoc) {
                     $.post(this.link, {azione: "nuovaAssoc", corso: JSON.stringify(c), docente: JSON.stringify(d)} , function(data) {
-                        alert("Associazione creata.");
+                        switch (data) {
+                            case "1":
+                                alert("Associazione creata.");
+                                self.getAssoc();
+                                self.getCeldas();
+                                break;
+                            case "0":
+                                alert("Associazione è già registrata.");
+                                break;
+                        }
                         // inserto il nuovo elemento nell'elenco senza chiamare al servLet una volta ancora
                         /*var trovato = false;
                         for (var i =0; i < self.associzioni.length; i++){
@@ -379,8 +394,6 @@
                         }
                         if (!trovato)
                             self.associzioni.push(JSON.parse(data));*/
-                        self.getAssoc();
-                        self.getCeldas();
                     }, "text");
 
                 }

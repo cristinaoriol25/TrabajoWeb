@@ -82,8 +82,10 @@ public class DAO {
         return role;
     }
 
-    public static void creare(Docente d) {
+    public static boolean creare(Docente d) {
         Connection conn1 = null;
+        boolean ok = false;
+
         try {
             conn1 = DriverManager.getConnection(url1, user, password);
             if (conn1 != null) {
@@ -92,11 +94,14 @@ public class DAO {
             Statement st = conn1.createStatement();
             ResultSet r= st.executeQuery("select * from Docente where nome='"+d.getNome()+"'and cognome='"+d.getCognome()+"';");
             if(r.next()) {
-                st.executeUpdate("update Docente set attiva=1 where nome='"+d.getNome()+"'and cognome='"+d.getCognome()+"' ;");
+                if (!r.getBoolean("attiva")) {
+                    st.executeUpdate("update Docente set attiva=1 where nome='"+d.getNome()+"'and cognome='"+d.getCognome()+"' ;");
+                    ok = true;
+                }
             }
             else{
-                st.executeUpdate("INSERT INTO `Docente` (`nome`, `cognome`, `attiva`) VALUES ('" + d.getNome() + "', '" +
-                        d.getCognome() + "', '1');");
+                st.executeUpdate("INSERT INTO `Docente` (`nome`, `cognome`, `attiva`) VALUES ('" + d.getNome() + "', '" + d.getCognome() + "', '1');");
+                ok = true;
             }
 
         } catch (SQLException e) {
@@ -110,10 +115,13 @@ public class DAO {
                 }
             }
         }
+
+        return ok;
     }
 
-    public static void creare(Corso c) {
+    public static boolean creare(Corso c) {
         Connection conn1 = null;
+        boolean ok = false;
         try {
             conn1 = DriverManager.getConnection(url1, user, password);
             if (conn1 != null) {
@@ -122,11 +130,14 @@ public class DAO {
             Statement st = conn1.createStatement();
             ResultSet r= st.executeQuery("select * from Corso where titulo='"+c.getTitulo()+"';");
             if(r.next()) {
-                st.executeUpdate("update Corso set attiva=1 where titulo='"+c.getTitulo()+"';");
+                if (!r.getBoolean("attiva")) {
+                    st.executeUpdate("update Corso set attiva=1 where titulo='"+c.getTitulo()+"';");
+                    ok = true;
+                }
             }
             else{
-                st.executeUpdate("INSERT INTO `Corso` (`titulo`, `attiva`) VALUES ('" +
-                        c.getTitulo() + "', '1');");
+                st.executeUpdate("INSERT INTO `Corso` (`titulo`, `attiva`) VALUES ('" + c.getTitulo() + "', '1');");
+                ok = true;
             }
 
         } catch (SQLException e) {
@@ -141,6 +152,8 @@ public class DAO {
                 }
             }
         }
+
+        return  ok;
     }
 
     public static Celda oraLibera(String g, int o){
@@ -475,8 +488,10 @@ public class DAO {
         return c;
     }
 
-    public static void creare(Associazione a){
+    public static boolean creare(Associazione a){
         Connection conn1 = null;
+        boolean ok = false;
+
         try {
             conn1 = DriverManager.getConnection(url1, user, password);
             if (conn1 != null) {
@@ -488,14 +503,14 @@ public class DAO {
 
             ResultSet rs = st.executeQuery("SELECT * FROM Imparte WHERE nome='"+d.getNome()+"' and cognome='"+d.getCognome()+"' and corso='"+c.getTitulo()+"';");
             if (rs.next()) {
-                st.executeUpdate("update Imparte set attiva=1 where nome='"+d.getNome()+"'and  cognome='"+d.getCognome()+"' and corso='"+c.getTitulo()+"';");
-
-
-            }else {
+                if (!rs.getBoolean("attiva")) {
+                    st.executeUpdate("update Imparte set attiva=1 where nome='"+d.getNome()+"'and  cognome='"+d.getCognome()+"' and corso='"+c.getTitulo()+"';");
+                    ok = true;
+                }
+            } else {
                 st.executeUpdate("Insert into Imparte(nome, cognome, corso, attiva) VALUES ('" + d.getNome() + "','" + d.getCognome() + "', '" + c.getTitulo() + "', 1);");
+                ok = true;
             }
-
-
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         } finally {
@@ -508,6 +523,7 @@ public class DAO {
             }
         }
 
+        return ok;
     }
 
     public static void eliminare(Associazione a){
