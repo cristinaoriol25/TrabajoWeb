@@ -10,7 +10,7 @@
 <body>
 
 
-<div id="app">
+<div id="app" onload="getCeldas()">
     <div v-if="mostrareLog">
         <h1>Login</h1>
         <p><label for="login"><b>Username: </b></label>
@@ -25,28 +25,29 @@
         <h2>Orario di prenotazioni</h2>
         <table>
             <thead>
-            <tr>
-                <th>ORA/GIORNO</th>
-                <th>LUNEDI</th>
-                <th>MARTEDI</th>
-                <th>MERCOLEDI</th>
-                <th>GIOVEDI</th>
-                <th>VENERDI</th>
-            </tr>
+                <tr>
+                    <th>ORA/GIORNO</th>
+                    <th>LUNEDI</th>
+                    <th>MARTEDI</th>
+                    <th>MERCOLEDI</th>
+                    <th>GIOVEDI</th>
+                    <th>VENERDI</th>
+                </tr>
             </thead>
-            <tbody>
-            <tr v-for="i in 4">
-                <td>{{ore[i-1]}}</td>
-                <td v-for="j in 5">
-                    <div v-for="k in (celde[(i-1)*5 +j-1]).libres">
-                        <h4>{{k.d.nome}} {{k.d.cognome}}</h4>
-                        <div v-for="v of k.corso">{{v.titulo}} <input v-if="!mostrareLog" type="checkbox" :value="giorni[j-1]+9+ore[i-1]+9+k.d.nome+9+k.d.cognome+9+v.titulo" v-model="checked"> </div>
-                    </div>
-                </td>
-            </tr>
+            <tbody v-if="celde[0]">
+                <tr v-for="i in 4">
+                    <td>{{ore[i-1]}}</td>
+                    <td v-for="j in 5">
+                        <div v-for="k in (celde[(i-1)*5 +j-1]).libres">
+                            <h4>{{k.d.nome}} {{k.d.cognome}}</h4>
+                            <div v-for="v of k.corso">{{v.titulo}} <input v-if="!mostrareLog" type="checkbox" :value="giorni[j-1]+9+ore[i-1]+9+k.d.nome+9+k.d.cognome+9+v.titulo" v-model="checked"> </div>
+                        </div>
+                    </td>
+                </tr>
     </div>
-    </tbody>
-    </table>
+            </tbody>
+        </table>
+
     <p><button v-if="!mostrareLog" v-on:click="prenotare">PRENOTARE</button></p>
 </div>
 
@@ -325,13 +326,16 @@
             },
             rimDoc:function(d){
                 var self = this;
-                $.post(this.link, {azione: "rimDoc", docente: JSON.stringify(d)}, function () {
-                    alert( d.nome  + " "+ d.cognome +" ha stato rimosso.");
-                    self.elencoDoc = self.elencoDoc.filter( el => el !== d );
-                    self.getAssoc();
-                    self.getPrenotazioni();
-                    self.getCeldas();
-                }, "text");
+                var risposta = confirm("Sei securo di rimovere il docente '" + d.nome + " " + d.cognome + "'?");
+                if (risposta) {
+                    $.post(this.link, {azione: "rimDoc", docente: JSON.stringify(d)}, function () {
+                        alert( d.nome  + " "+ d.cognome +" ha stato rimosso.");
+                        self.elencoDoc = self.elencoDoc.filter( el => el !== d );
+                        self.getAssoc();
+                        self.getPrenotazioni();
+                        self.getCeldas();
+                    }, "text");
+                }
             },
             nuovoCor:function(){
                 var self = this;
@@ -352,13 +356,16 @@
 
             rimCorso:function(c){
                 var self = this;
-                $.post(this.link, {azione: "rimCorso", corso: JSON.stringify(c)} , function(data) {
-                    alert( c.titulo +" ha stato rimosso.");
-                    self.elencoCorsi = self.elencoCorsi.filter( el => el !== c );
-                    self.getAssoc();
-                    self.getCeldas()
-                    self.getPrenotazioni()
-                }, "text");
+                var risposta = confirm("Sei securo di rimovere il corso '" + c.titulo + "'?");
+                if (risposta) {
+                    $.post(this.link, {azione: "rimCorso", corso: JSON.stringify(c)} , function(data) {
+                        alert( c.titulo +" ha stato rimosso.");
+                        self.elencoCorsi = self.elencoCorsi.filter( el => el !== c );
+                        self.getAssoc();
+                        self.getCeldas()
+                        self.getPrenotazioni()
+                    }, "text");
+                }
             },
 
             nuovaAssoc:function(d,c){
@@ -389,28 +396,38 @@
 
             rimAssoc:function(d,c){
                 var self = this;
-                $.post(this.link, {azione: "rimAsso", corso: JSON.stringify(c), docente: JSON.stringify(d)} , function(data) {
-                    self.getPrenotazioni();
-                    self.getAssoc();
-                    self.getCeldas();
-                    alert("Associazione rimossa.");
-                }, "text");
-
+                var risposta = confirm("Sei securo di volerlo rimovere?");
+                if (risposta) {
+                    $.post(this.link, {azione: "rimAsso", corso: JSON.stringify(c), docente: JSON.stringify(d)} , function(data) {
+                        self.getPrenotazioni();
+                        self.getAssoc();
+                        self.getCeldas();
+                        alert("Associazione rimossa.");
+                    }, "text");
+                }
             },
 
             effettuare:function(p){
                 var self = this;
-                $.post(this.link, {azione: "effettuare", pre: JSON.stringify(p)}, function(){
-                    self.getCeldas();
-                }, "text");
-                p.stato = "EFFETTUATA";
+                var risposta = confirm("Sei securo di volerlo fare?");
+                if (risposta) {
+                    $.post(this.link, {azione: "effettuare", pre: JSON.stringify(p)}, function(){
+                        self.getCeldas();
+                    }, "text");
+                    p.stato = "EFFETTUATA";
+                    alert("Prenotazione effetuata");
+                }
             },
             disdire:function(p){
                 var self = this;
-                $.post(this.link, {azione: "disdire", pre: JSON.stringify(p)},function(){
-                    self.getCeldas();
-                }, "text");
-                p.stato = "CANCELLATA";
+                var risposta = confirm("Sei securo di volerlo disdire?");
+                if (risposta) {
+                    $.post(this.link, {azione: "disdire", pre: JSON.stringify(p)},function(){
+                        self.getCeldas();
+                    }, "text");
+                    p.stato = "CANCELLATA";
+                    alert("Prenotazione disdetta");
+                }
             },
             prenotare:function() {
                 var self = this;
