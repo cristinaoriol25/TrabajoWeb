@@ -8,6 +8,7 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -72,6 +73,8 @@ public class ServletController extends javax.servlet.http.HttpServlet {
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
+        HttpSession session = request.getSession();
+
         try (PrintWriter out = response.getWriter()) {
             JSONManager JSONMan = new JSONManager();
             String fun = request.getParameter("azione");
@@ -79,6 +82,11 @@ public class ServletController extends javax.servlet.http.HttpServlet {
                 String account = request.getParameter("utente");
                 String pass = request.getParameter("password");
                 if (correctlog(account,pass)) {
+                    if (account != null && pass != null) {
+                        session.setAttribute("account", account);
+                        session.setAttribute("password", pass);
+                    }
+
                     if (getRuolo(account)) {
                         out.println(JSONMan.serializeJson("ad"));
                     } else {
@@ -88,6 +96,24 @@ public class ServletController extends javax.servlet.http.HttpServlet {
                 else {
                     out.println(JSONMan.serializeJson("f"));
                 }
+            } else if (fun.equals("giaLogin")) {
+                String account = (String) session.getAttribute("account");
+                String pass = (String) session.getAttribute("password");
+                if (account != null && pass != null) {
+                    if (correctlog(account,pass)) {
+                        if (getRuolo(account)) {
+                            out.println(JSONMan.serializeJson(account + "9" + pass + "9ad"));
+                        } else {
+                            out.println(JSONMan.serializeJson(account + "9" + pass + "9a"));
+                        }
+                    } else {
+                        out.println(JSONMan.serializeJson(account + "9" + pass + "9f"));
+                    }
+                } else {
+                    out.print("vuoto");
+                }
+            } else if (fun.equals("logout")) {
+                session.invalidate();
             }
             else if (fun.equals("oraLibera")) {
                 out.println(mostrareOraLibera(JSONMan));

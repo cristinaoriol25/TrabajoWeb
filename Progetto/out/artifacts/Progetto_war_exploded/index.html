@@ -21,6 +21,10 @@
     </div>
     <span v-if="erroreConn" > Utente o password sbagliato.</span>
 
+    <div v-if="!mostrareLog">
+        <p><button v-on:click="logout">Log Out</button></p>
+    </div>
+
     <div>
         <h2>Orario di prenotazioni</h2>
         <table>
@@ -456,42 +460,62 @@
                     }, "text");
                 }
             },
+            setPage:function(type) {
+                var self = this;
+                switch(type){
+                    case "a":
+                        self.admin = false;
+                        self.erroreConn = false;
+                        self.mostrareLog = false;
+                        self.getPrenotazioni();
+                        self.getCeldas();
+                        self.mostrareElenPre = true;
+                        break;
+                    case "ad":
+                        self.getDocenti();
+                        self.getCorsi();
+                        self.getPrenotazioni();
+                        self.getAssoc();
+                        self.getCeldas();
+                        self.admin = true;
+                        self.mostrareLog = false;
+                        self.erroreConn = false;
+                        self.mostrareElenPre = true;
+                        break;
+                    case "f":
+                        self.erroreConn = true;
+                        break;
+                }
+            },
             enviare:function(){
                 var self = this;
                 $.post(this.link, {azione: "connessione", utente: this.account , password: this.pass} , function(data) {
-                    switch(data){
-                        case "a":
-                            self.admin = false;
-                            self.erroreConn = false;
-                            self.mostrareLog = false;
-                            self.getPrenotazioni();
-                            self.getCeldas();
-                            self.mostrareElenPre = true;
-                            break;
-                        case "ad":
-                            self.getDocenti();
-                            self.getCorsi();
-                            self.getPrenotazioni();
-                            self.getAssoc();
-                            self.getCeldas();
-                            self.admin = true;
-                            self.mostrareLog = false;
-                            self.erroreConn = false;
-                            self.mostrareElenPre = true;
-                            break;
-
-                        case "f":
-                            self.erroreConn = true;
-                            break;
-
-
-                    }
-
+                    self.setPage(data);
                 });
+            },
+            iniziato:function () {
+                var self = this;
+                $.post(this.link, {azione: "giaLogin"} , function(data) {
+                    if (data !== "vuoto") {
+                        var stringe = data.split("9");
+                        self.account = stringe[0];
+                        self.pass = stringe[1];
+                        self.setPage(stringe[2]);
+                    }
+                });
+            },
+            logout:function () {
+                var self = this;
+                $.post(this.link, {azione: "logout"}, function (data) {
+                })
+                alert("Ciao " + self.account);
+                console.log(self.account + " " + self.pass);
+                location.reload();
             }
         },
         mounted(){
             this.getCeldas();
+            this.iniziato();
         }
     });
 
