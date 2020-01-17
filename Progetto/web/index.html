@@ -22,6 +22,7 @@
     <span v-if="erroreConn" > Utente o password sbagliato.</span>
 
     <div v-if="!mostrareLog">
+        <h2>Bienvenuto {{account}}</h2>
         <p><button v-on:click="logout">Log Out</button></p>
     </div>
 
@@ -445,13 +446,13 @@
                 var self = this;
                 var insert = true;
                 var id = s + tit;
-                var existe = false; // el elemento pulsado ya existia y por tanto hay que desmarcarlo
-                var otrPre = false; // existe otro elemento con el mismo profesor, dia y hora
-                var i = 0; // posicion para borrar el elemento si hace falta
+                var existe = false; // si el elemento pulsado ya existia -> true y por tanto hay que desmarcarlo
+                var otrPre = false; // si existe otro elemento con el mismo profesor, dia y hora -> true
+                var i = 0; // posicion para borrar el elemento si existe==true
 
                 // :value="giorni[j-1]+9+ore[i-1]+9+k.d.nome+9+k.d.cognome+9+v.titulo" v-model="checked"
                 if (self.checked.length > 0) {
-                    while (!existe && i < self.checked.length) {
+                    while (!existe && !otrPre && i < self.checked.length) {
                         existe = self.checked[i] === id;
                         otrPre = self.checked[i].startsWith(s);
                         i++;
@@ -526,11 +527,17 @@
             iniziato:function () {
                 var self = this;
                 $.post(this.link, {azione: "giaLogin"} , function(data) {
-                    if (data !== "vuoto") {
-                        var stringe = data.split("9");
-                        self.account = stringe[0];
-                        self.pass = stringe[1];
-                        self.setPage(stringe[2]);
+                    if (data !== "f") {
+                        self.account = data.user;
+                        self.pass = data.pass;
+
+                        if (data.admin) {
+                            self.setPage("ad");
+                        } else {
+                            self.setPage("a");
+                        }
+                    } else {
+                        self.setPage("f");
                     }
                 });
             },

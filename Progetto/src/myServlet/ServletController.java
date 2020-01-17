@@ -101,16 +101,13 @@ public class ServletController extends javax.servlet.http.HttpServlet {
                 String pass = (String) session.getAttribute("password");
                 if (account != null && pass != null) {
                     if (correctlog(account,pass)) {
-                        if (getRuolo(account)) {
-                            out.println(JSONMan.serializeJson(account + "9" + pass + "9ad"));
-                        } else {
-                            out.println(JSONMan.serializeJson(account + "9" + pass + "9a"));
-                        }
+                        Utente u = new Utente(account, pass, (Boolean) getRuolo(account));
+                        out.println(JSONMan.serializeJson(u));
                     } else {
-                        out.println(JSONMan.serializeJson(account + "9" + pass + "9f"));
+                        out.print("f");
                     }
                 } else {
-                    out.print("vuoto");
+                    out.print("f");
                 }
             } else if (fun.equals("logout")) {
                 session.invalidate();
