@@ -21,8 +21,8 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" scope="PROVIDED" name="Tomcat 9.0.27" level="application_server_libraries" />
     <orderEntry type="library" exported="" name="servlet-api" level="project" />
-    <orderEntry type="library" name="servlet-api" level="application" />
+    <orderEntry type="library" exported="" name="servlet-api" level="application" />
     <orderEntry type="library" exported="" name="mysql-connector-java-5.1.44-bin" level="application" />
-    <orderEntry type="library" name="JACKSON library2" level="application" />
+    <orderEntry type="library" exported="" name="JACKSON library2" level="application" />
   </component>
 </module>

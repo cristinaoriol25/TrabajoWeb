@@ -6,42 +6,61 @@
     <meta http-equiv="Cache-Control" content="no-store" />
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="ourStyle.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <!--
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    -->
 </head>
 
 <body>
 
 <div id="app" onload="getCeldas()">
-    <div v-if="mostrareLog">
-        <h1>Login</h1>
-        <p><label for="login"><b>Username: </b></label>
-            <input type="text" v-model="account" required/></p>
-        <p><label for="pass"><b>Password: </b></label>
-            <input type="password" v-model="pass" required></p>
-        <p><button v-on:click="enviare">OK</button></p>
-    </div>
-    <span v-if="erroreConn" > Utente o password sbagliato.</span>
+    <header> <img id="logo" src="img/logo.png">
+        <div v-if="!mostrareLog" id="logout">
+            <h2>Benvenuto {{account}}</h2>
+            <p><button v-on:click="logout" class="btn btn-light">Log Out</button></p>
+        </div>
+        <div v-if="mostrareLog" id="log">
+            <h2>Login</h2>
+            <div class="input-group input-group-sm mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="inputGroup-sizing-sm">Username: </span>
+                </div>
+                <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" v-model="account" required>
+            </div>
+            <div class="input-group input-group-sm mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="inputGroup-sizing-sm2">Password: </span>
+                </div>
+                <input type="password" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" v-model="pass" required>
+            </div>
+            <p><button v-on:click="enviare" class="btn btn-light">OK</button></p>
+            <span v-if="erroreConn" class="alert alert-danger" > Utente o password sbagliato.</span>
+        </div>
+    </header>
 
-    <div v-if="!mostrareLog">
-        <h2>Bienvenuto {{account}}</h2>
-        <p><button v-on:click="logout">Log Out</button></p>
-    </div>
 
-    <div>
+
+
+    <div id="tabela">
         <h2>Orario di prenotazioni</h2>
-        <table>
-            <thead>
+        <table class="table table-striped" >
+            <thead class="thead-dark">
                 <tr>
-                    <th>ORA/GIORNO</th>
-                    <th>LUNEDI</th>
-                    <th>MARTEDI</th>
-                    <th>MERCOLEDI</th>
-                    <th>GIOVEDI</th>
-                    <th>VENERDI</th>
+                    <th scope="col">ORA/GIORNO</th>
+                    <th scope="col">LUNEDI</th>
+                    <th scope="col">MARTEDI</th>
+                    <th scope="col">MERCOLEDI</th>
+                    <th scope="col">GIOVEDI</th>
+                    <th scope="col">VENERDI</th>
                 </tr>
             </thead>
             <tbody v-if="celde[0]">
                 <tr v-for="i in 4">
-                    <td>{{ore[i-1]}}</td>
+                    <th scope="row">{{ore[i-1]}}</th>
                     <td v-for="j in 5">
                         <div v-for="k in (celde[(i-1)*5 +j-1]).libres">
                             <h4>{{k.d.nome}} {{k.d.cognome}}</h4>
@@ -52,7 +71,7 @@
             </tbody>
         </table>
 
-        <p><button v-if="!mostrareLog" v-on:click="prenotare">PRENOTARE</button></p>
+        <p><button v-if="!mostrareLog" v-on:click="prenotare" class="btn btn-success">PRENOTARE</button></p>
     </div>
 
     <div v-if="mostrareElenPre">
@@ -77,8 +96,8 @@
                 <td>{{p.d.cognome}}</td>
                 <td>{{p.d.nome}}</td>
                 <td>{{p.c.titulo}}</td>
-                <td v-if="!admin"><button v-on:click="effettuare(p)">EFF</button></td>
-                <td><button v-on:click="disdire(p)">X</button></td>
+                <td v-if="!admin"><button v-on:click="effettuare(p)" class="btn btn-warning">EFF</button></td>
+                <td><button v-on:click="disdire(p)" class="btn btn-danger">X</button></td>
             </tr>
         </table>
 
@@ -102,7 +121,7 @@
                 <td>{{p.d.cognome}}</td>
                 <td>{{p.d.nome}}</td>
                 <td>{{p.c.titulo}}</td>
-                <td><button v-on:click="disdire(p)">X</button></td>
+                <td><button v-on:click="disdire(p)" class="btn btn-danger">X</button></td>
             </tr>
         </table>
 
@@ -142,7 +161,7 @@
             <input type="text" v-model="cognome"/>
             <label  v-if="erroreDocCognome"> Campo vuoto </label>
         </p>
-        <p><button v-on:click="nuovoDoc">Submit</button></p>
+        <p><button v-on:click="nuovoDoc" class="btn btn-light">Submit</button></p>
 
         <h3>Elenco di docenti.</h3>
         <div v-if="elencoDoc.length===0">Non c'è nessun docente registrato.</div>
@@ -155,7 +174,7 @@
             <tr v-for="d in elencoDoc">
                 <td>{{d.cognome}}</td>
                 <td>{{d.nome}}</td>
-                <td><button v-on:click="rimDoc(d)">X</button></td>
+                <td><button v-on:click="rimDoc(d)" class="btn btn-danger">X</button></td>
             </tr>
         </table>
 
@@ -164,7 +183,7 @@
             <input type="text" v-model="corso"/>
             <label for="eCorso" v-if="erroreCorso"> Campo vuoto </label>
         </p>
-        <p><button v-on:click="nuovoCor">Submit</button></p>
+        <p><button v-on:click="nuovoCor" class="btn btn-light">Submit</button></p>
 
         <h3>Elenco di corsi.</h3>
         <div v-if="elencoCorsi.length===0">Non c'è nessun corso registrato.</div>
@@ -175,7 +194,7 @@
             </tr>
             <tr v-for="c in elencoCorsi">
                 <td>{{c.titulo}}</td>
-                <td><button v-on:click="rimCorso(c)">X</button></td>
+                <td><button v-on:click="rimCorso(c)" class="btn btn-danger">X</button></td>
             </tr>
         </table>
 
@@ -188,7 +207,7 @@
         <select v-model="corSelect">
             <option v-for="c in elencoCorsi" :value="c">{{c.titulo}}</option>
         </select>
-        <p><button v-on:click="nuovaAssoc(docSelect,corSelect)">Submit</button></p>
+        <p><button v-on:click="nuovaAssoc(docSelect,corSelect)" class="btn btn-light">Submit</button></p>
         <h3>Elenco di associazioni.</h3>
         <div v-if="associzioni.length===0">Non c'è nessuna associazione registrata.</div>
         <div v-for="a in associzioni">
@@ -205,7 +224,7 @@
                 <tbody>
                     <tr v-for="c in a.corso">
                         <td>{{c.titulo}}</td>
-                        <td><button v-on:click="rimAssoc(a.d,c)">X</button></td>
+                        <td><button v-on:click="rimAssoc(a.d,c)" class="btn btn-danger">X</button></td>
                     </tr>
                 </tbody>
             </table>
@@ -214,6 +233,14 @@
 </div>
 
 <script>
+    $('div .checkbox').click(function () {
+        checkedState = $(this).attr('checked');
+        $(this).parent('div').children('.checkbox:checked').each(function () {
+            $(this).attr('checked', false);
+        });
+        $(this).attr('checked', checkedState);
+    });
+
     var app = new Vue ({
         el: '#app',
         data: {
@@ -464,12 +491,12 @@
                 if (insert) {
                     self.checked.push(id);
                 } else {
-                    if (!existe) { // Es un nuevo elemento a marcar
-                        alert("No se puede marcar");
-                    } else { // Ya estaba marcado
+                    document.getElementById(id).checked = false;
+                    if (!existe) { // E un nuovo elemento a scegliere
+                        alert("Non si può scegliere.");
+                    } else { // Gia era sceglieto
                         self.checked.splice(i-1, 1);
                     }
-                    document.getElementById(id).checked = false;
                 }
             },
             prenotare:function() {
@@ -557,7 +584,6 @@
     });
 
 </script>
-
 
 </body>
 </html>

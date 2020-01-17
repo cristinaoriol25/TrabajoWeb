@@ -1,0 +1,22 @@
+#logo{
+    width: 38%;
+}
+
+#log {
+    width: 30%;
+    float: right;
+    text-align: center;
+    margin: auto;
+
+}
+
+#logout {
+    width: 40%;
+    float: right;
+}
+
+#tabela {
+    width: 80%;
+    clear: bottom;
+
+}

@@ -162,12 +162,10 @@ public class ServletController extends javax.servlet.http.HttpServlet {
                 Corso c = JSONMan.parseJson(request.getParameter("corso"), Corso.class);
                 Docente d = JSONMan.parseJson(request.getParameter("docente"), Docente.class);
                 Associazione a = new Associazione(d,c);
-
-                if (creare(a)) {
+                if (creare(a))
                     out.print("1");
-                } else {
+                else
                     out.print("0");
-                }
             }
             else if (fun.equals("rimAsso")){
                 Corso c = JSONMan.parseJson(request.getParameter("corso"), Corso.class);
