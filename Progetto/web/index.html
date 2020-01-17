@@ -44,7 +44,7 @@
                     <td v-for="j in 5">
                         <div v-for="k in (celde[(i-1)*5 +j-1]).libres">
                             <h4>{{k.d.nome}} {{k.d.cognome}}</h4>
-                            <div v-for="v of k.corso">{{v.titulo}} <input v-if="!mostrareLog" type="checkbox" :value="giorni[j-1]+9+ore[i-1]+9+k.d.nome+9+k.d.cognome+9+v.titulo" v-model="checked"> </div>
+                            <div v-for="v of k.corso">{{v.titulo}} <input :id="giorni[j-1]+9+ore[i-1]+9+k.d.nome+9+k.d.cognome+9+v.titulo" v-if="!mostrareLog" type="checkbox" v-on:click="CheckPrenotazione(giorni[j-1]+9+ore[i-1]+9+k.d.nome+9+k.d.cognome+9,v.titulo)"> </div>
                         </div>
                     </td>
                 </tr>
@@ -439,6 +439,36 @@
                     }, "text");
                     p.stato = "CANCELLATA";
                     alert("Prenotazione disdetta");
+                }
+            },
+            CheckPrenotazione: function(s, tit) {
+                var self = this;
+                var insert = true;
+                var id = s + tit;
+                var existe = false; // el elemento pulsado ya existia y por tanto hay que desmarcarlo
+                var otrPre = false; // existe otro elemento con el mismo profesor, dia y hora
+                var i = 0; // posicion para borrar el elemento si hace falta
+
+                // :value="giorni[j-1]+9+ore[i-1]+9+k.d.nome+9+k.d.cognome+9+v.titulo" v-model="checked"
+                if (self.checked.length > 0) {
+                    while (!existe && i < self.checked.length) {
+                        existe = self.checked[i] === id;
+                        otrPre = self.checked[i].startsWith(s);
+                        i++;
+                    }
+
+                    insert = !existe && !otrPre;
+                }
+
+                if (insert) {
+                    self.checked.push(id);
+                } else {
+                    if (!existe) { // Es un nuevo elemento a marcar
+                        alert("No se puede marcar");
+                    } else { // Ya estaba marcado
+                        self.checked.splice(i-1, 1);
+                    }
+                    document.getElementById(id).checked = false;
                 }
             },
             prenotare:function() {
