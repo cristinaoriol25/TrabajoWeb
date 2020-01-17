@@ -20,11 +20,11 @@
 <div id="app" onload="getCeldas()">
     <header> <img id="logo" src="img/logo.png">
         <div v-if="!mostrareLog" id="logout">
-            <h2>Benvenuto {{account}}</h2>
+            <h4>Benvenuto {{account}}</h4>
             <p><button v-on:click="logout" class="btn btn-light">Log Out</button></p>
         </div>
         <div v-if="mostrareLog" id="log">
-            <h2>Login</h2>
+            <h2>Log In</h2>
             <div class="input-group input-group-sm mb-3">
                 <div class="input-group-prepend">
                     <span class="input-group-text" id="inputGroup-sizing-sm">Username: </span>
@@ -37,15 +37,21 @@
                 </div>
                 <input type="password" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" v-model="pass" required>
             </div>
-            <p><button v-on:click="enviare" class="btn btn-light">OK</button></p>
+            <p><button v-on:click="enviare" class="btn btn-light">Log In</button></p>
             <span v-if="erroreConn" class="alert alert-danger" > Utente o password sbagliato.</span>
         </div>
     </header>
 
+    <nav  v-if="!mostrareLog" class="navbar navbar-dark bg-dark">
+        <span class="navbar-brand mb-0 h1"><button class="navbar-toggler"  v-on:click="hider(); tabella = true">Prenotare</button></span>
+        <span class="navbar-brand mb-0 h1" v-if="!admin"><button  class="navbar-toggler"  v-on:click="hider(); mostrareElenPre = true">I miei prenotazioni</button></span>
+        <span class="navbar-brand mb-0 h1" v-if="admin"><button class="navbar-toggler"  v-on:click="hider(); mostrareElenPre = true" >Tutti i prenotazioni.</button></span>
+        <span class="navbar-brand mb-0 h1" v-if="admin" ><button class="navbar-toggler" v-on:click="hider(); impos = true">Impostazioni</button></span>
+
+    </nav>
 
 
-
-    <div id="tabela">
+    <div id="tabella" v-if="tabella">
         <h2>Orario di prenotazioni</h2>
         <table class="table table-striped" >
             <thead class="thead-dark">
@@ -77,17 +83,17 @@
     <div v-if="mostrareElenPre">
         <h2>I miei prenotazioni</h2>
         <h3>Attivi:</h3>
-        <div v-if="attivi.length===0">Non c'è nessuna prenotazione attivi.</div>
-        <table v-if="attivi.length!==0">
+        <div v-if="attivi.length===0" class="alert alert-warning">Non c'è nessuna prenotazione attivi.</div>
+        <table v-if="attivi.length!==0" class="table">
             <tr>
-                <th v-if="admin">Utente</th>
-                <th >Ora</th>
-                <th>Giorno</th>
-                <th>Cognome</th>
-                <th>Nome</th>
-                <th>Corso</th>
-                <th v-if="!admin">Effettuare</th>
-                <th>Disdire</th>
+                <th v-if="admin" scope="col">Utente</th>
+                <th scope="col" >Ora</th>
+                <th scope="col">Giorno</th>
+                <th scope="col">Cognome</th>
+                <th scope="col">Nome</th>
+                <th scope="col">Corso</th>
+                <th v-if="!admin" scope="col">Effettuare</th>
+                <th scope="col">Disdire</th>
             </tr>
             <tr v-for="p in attivi">
                 <td v-if="admin" >{{p.u.user}}</td>
@@ -103,16 +109,16 @@
 
 
         <h3>Effettuati:</h3>
-        <div v-if="effettuati.length===0">Non c'è nessuna prenotazione effettuati.</div>
-        <table v-if="effettuati.length!==0">
+        <div v-if="effettuati.length===0" class="alert alert-warning">Non c'è nessuna prenotazione effettuati.</div>
+        <table v-if="effettuati.length!==0" class="table">
             <tr>
-                <th v-if="admin">Utente</th>
-                <th>Ora</th>
-                <th>Giorno</th>
-                <th>Cognome</th>
-                <th>Nome</th>
-                <th>Corso</th>
-                <th>Disdire</th>
+                <th v-if="admin" scope="col">Utente</th>
+                <th scope="col">Ora</th>
+                <th scope="col">Giorno</th>
+                <th scope="col">Cognome</th>
+                <th scope="col">Nome</th>
+                <th scope="col">Corso</th>
+                <th scope="col">Disdire</th>
             </tr>
             <tr v-for="p in effettuati">
                 <td v-if="admin">{{p.u.user}}</td>
@@ -127,15 +133,15 @@
 
 
         <h3>Disdeti:</h3>
-        <div v-if="disdeti.length===0">Non c'è nessuna prenotazione disdeta.</div>
-        <table v-if="disdeti.length!==0">
+        <div v-if="disdeti.length===0" class="alert alert-warning">Non c'è nessuna prenotazione disdeta.</div>
+        <table v-if="disdeti.length!==0" class="table">
             <tr>
-                <th v-if="admin" >Utente</th>
-                <th>Ora</th>
-                <th>Giorno</th>
-                <th>Cognome</th>
-                <th>Nome</th>
-                <th>Corso</th>
+                <th v-if="admin" scope="col">Utente</th>
+                <th scope="col">Ora</th>
+                <th scope="col">Giorno</th>
+                <th scope="col">Cognome</th>
+                <th scope="col">Nome</th>
+                <th scope="col">Corso</th>
             </tr>
             <tr v-for="p in disdeti">
                 <td v-if="admin">{{p.u.user}}</td>
@@ -149,7 +155,7 @@
     </div>
 
 
-    <div v-if="admin">
+    <div v-if="impos">
         <h2>Impostazioni </h2>
         <h3>Inserire docente</h3>
 
@@ -267,7 +273,9 @@
             ore: [15,16,17,18],
             giorni: ["LUNEDI","MARTEDI","MERCOLEDI","GIOVEDI","VENERDI"],
             checked: [],
-            celde: []
+            celde: [],
+            tabella: true,
+            impos: false
 
         },
         computed:{
@@ -399,6 +407,12 @@
                 }
             },
 
+            hider:function(){
+                var self = this;
+                self.tabella = false;
+                self.mostrareElenPre = false;
+                self.impos = false;
+            },
             nuovaAssoc:function(d,c){
                 var self = this;
                 self.erroreAssoc = !c.hasOwnProperty('titulo') || !d.hasOwnProperty('nome') || !d.hasOwnProperty('cognome');
@@ -527,7 +541,6 @@
                         self.mostrareLog = false;
                         self.getPrenotazioni();
                         self.getCeldas();
-                        self.mostrareElenPre = true;
                         break;
                     case "ad":
                         self.getDocenti();
@@ -538,7 +551,6 @@
                         self.admin = true;
                         self.mostrareLog = false;
                         self.erroreConn = false;
-                        self.mostrareElenPre = true;
                         break;
                     case "f":
                         self.erroreConn = true;
