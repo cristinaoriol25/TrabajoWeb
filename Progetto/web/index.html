@@ -92,9 +92,9 @@
     <div  data-spy="scroll" data-target="#navbar-example3" data-offset="0" v-if="mostrareElenPre" id="myBooks" >
         <h2 v-if="!admin">I miei prenotazioni</h2>
         <h2 v-if="admin">Tutti i prenotazioni</h2>
+        <h3 id="att" class="tittleTable">Attivi:</h3>
         <div v-if="attivi.length===0" class="alert alert-warning">Non c'è nessuna prenotazione attivi.</div>
         <table v-if="attivi.length!==0" class="table">
-            <h3 id="att" class="tittleTable">Attivi:</h3>
             <tr>
                 <th v-if="admin" scope="col">Utente</th>
                 <th scope="col" >Ora</th>
@@ -117,10 +117,9 @@
             </tr>
         </table>
 
-
+        <h3 id="eff" class="tittleTable">Effettuati:</h3>
         <div v-if="effettuati.length===0" class="alert alert-warning">Non c'è nessuna prenotazione effettuati.</div>
         <table v-if="effettuati.length!==0" class="table">
-            <h3 id="eff" class="tittleTable">Effettuati:</h3>
             <tr>
                 <th v-if="admin" scope="col">Utente</th>
                 <th scope="col">Ora</th>
@@ -141,10 +140,9 @@
             </tr>
         </table>
 
-
+        <h3 id="dis" class="tittleTable">Disdeti:</h3>
         <div v-if="disdeti.length===0" class="alert alert-warning">Non c'è nessuna prenotazione disdeta.</div>
         <table v-if="disdeti.length!==0" class="table">
-            <h3 id="dis" class="tittleTable">Disdeti:</h3>
             <tr>
                 <th v-if="admin" scope="col">Utente</th>
                 <th scope="col">Ora</th>
@@ -165,11 +163,22 @@
 
     </div>
 
+    <aside id="navbar-example3" class="navbar navbar-light bg-light" v-if="impos">
+        <a class="navbar-brand" href="#myBooks">Impostazioni</a>
+        <nav class="nav nav-pills flex-column">
+            <a class="nav-link" href="#idoc">Inserire docente</a>
+            <a class="nav-link" href="#ldoc">Elenco di docenti</a>
+            <a class="nav-link" href="#icor">Inserire corso</a>
+            <a class="nav-link" href="#lcor">Elenco di corsi</a>
+            <a class="nav-link" href="#iass">Nuova associazione</a>
+            <a class="nav-link" href="#lass">Elenco di associazioni</a>
+        </nav>
+    </aside>
 
-    <div v-if="impos">
+    <div  data-spy="scroll" data-target="#navbar-example3" data-offset="0" v-if="impos" id="myBooks">
         <h2>Impostazioni </h2>
-        <h3>Inserire docente</h3>
 
+        <h3 id="idoc" class="tittleTable">Inserire docente:</h3>
         <p><label><b>Nome: </b></label>
             <input type="text" v-model="nome"/>
             <label  v-if="erroreDocNome"> Campo vuoto </label>
@@ -180,13 +189,13 @@
         </p>
         <p><button v-on:click="nuovoDoc" class="btn btn-light">Submit</button></p>
 
-        <h3>Elenco di docenti.</h3>
-        <div v-if="elencoDoc.length===0">Non c'è nessun docente registrato.</div>
-        <table>
-            <tr v-if="elencoDoc.length!==0">
-                <th>Cognome</th>
-                <th>Nome</th>
-                <th>Rimuoveri</th>
+        <h3 id="ldoc" class="tittleTable">Elenco di docenti:</h3>
+        <div v-if="elencoDoc.length===0" class="alert alert-warning">Non c'è nessun docente registrato.</div>
+        <table v-if="elencoDoc.length!==0" class="table">
+            <tr>
+                <th scope="col">Cognome</th>
+                <th scope="col">Nome</th>
+                <th scope="col">Rimuoveri</th>
             </tr>
             <tr v-for="d in elencoDoc">
                 <td>{{d.cognome}}</td>
@@ -195,19 +204,19 @@
             </tr>
         </table>
 
-        <h3>Inserire corso</h3>
+        <h3 id="icor" class="tittleTable">Inserire corso:</h3>
         <p><label for="corso"><b>Corso: </b></label>
             <input type="text" v-model="corso"/>
             <label for="eCorso" v-if="erroreCorso"> Campo vuoto </label>
         </p>
         <p><button v-on:click="nuovoCor" class="btn btn-light">Submit</button></p>
 
-        <h3>Elenco di corsi.</h3>
-        <div v-if="elencoCorsi.length===0">Non c'è nessun corso registrato.</div>
-        <table>
-            <tr v-if="elencoCorsi.length!==0">
-                <th>Titolo</th>
-                <th>Rimuoveri</th>
+        <h3 id="lcor" class="tittleTable">Elenco di corsi:</h3>
+        <div v-if="elencoCorsi.length===0" class="alert alert-warning">Non c'è nessun corso registrato.</div>
+        <table v-if="elencoCorsi.length!==0" class="table">
+            <tr>
+                <th scope="col">Titolo</th>
+                <th scope="col">Rimuoveri</th>
             </tr>
             <tr v-for="c in elencoCorsi">
                 <td>{{c.titulo}}</td>
@@ -215,27 +224,30 @@
             </tr>
         </table>
 
-        <h3>Nuova associazione.</h3>
+        <h3 id="iass" class="tittleTable">Nuova associazione:</h3>
         <p v-if="erroreAssoc">Inserire tutti i campi</p>
-        <select v-model="docSelect">
-            <option v-for="d in elencoDoc" :value="d">{{d.cognome}} {{d.nome}}</option>
-        </select>
+        <p>
+            <select v-model="docSelect">
+                <option v-for="d in elencoDoc" :value="d">{{d.cognome}} {{d.nome}}</option>
+            </select>
 
-        <select v-model="corSelect">
-            <option v-for="c in elencoCorsi" :value="c">{{c.titulo}}</option>
-        </select>
+            <select v-model="corSelect">
+                <option v-for="c in elencoCorsi" :value="c">{{c.titulo}}</option>
+            </select>
+        </p>
         <p><button v-on:click="nuovaAssoc(docSelect,corSelect)" class="btn btn-light">Submit</button></p>
-        <h3>Elenco di associazioni.</h3>
-        <div v-if="associzioni.length===0">Non c'è nessuna associazione registrata.</div>
+
+        <h3 id="lass" class="tittleTable">Elenco di associazioni:</h3>
+        <div v-if="associzioni.length===0" class="alert alert-warning">Non c'è nessuna associazione registrata.</div>
         <div v-for="a in associzioni">
             <h4 >
                 {{a.d.cognome}}, {{a.d.nome}}
             </h4>
-            <table>
+            <table class="table">
                 <thead>
                     <tr>
-                        <th>Titolo</th>
-                        <th>Rimuoveri</th>
+                        <th scope="col">Corso</th>
+                        <th scope="col">Rimuoveri</th>
                     </tr>
                 </thead>
                 <tbody>
