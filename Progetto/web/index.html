@@ -18,7 +18,7 @@
 <body>
 
 <div id="app" onload="getCeldas()">
-    <header> <img id="logo" src="img/logo.png">
+    <header> <img id="logo" src="img/logo.png" atl="logo">
         <div v-if="!mostrareLog" id="logout">
             <h4>Benvenuto {{account}}</h4>
             <p><button v-on:click="logout" class="btn btn-light">Log Out</button></p>
@@ -51,9 +51,9 @@
     </nav>
 
 
-    <div id="tabella" v-if="tabella">
-        <h2>Orario di prenotazioni</h2>
-        <table class="table table-striped" >
+    <article id="tabella" v-if="tabella">
+        <h3 class="tittleTable">Prenotazioni disponibili.</h3>
+        <table class="table table-striped">
             <thead class="thead-dark">
                 <tr>
                     <th scope="col">ORA/GIORNO</th>
@@ -78,13 +78,23 @@
         </table>
 
         <p><button v-if="!mostrareLog" v-on:click="prenotare" class="btn btn-success">PRENOTARE</button></p>
-    </div>
+    </article>
 
-    <div v-if="mostrareElenPre">
-        <h2>I miei prenotazioni</h2>
-        <h3>Attivi:</h3>
+    <aside id="navbar-example3" class="navbar navbar-light bg-light" v-if="mostrareElenPre">
+        <a class="navbar-brand" href="#myBooks">Prenotazioni</a>
+        <nav class="nav nav-pills flex-column">
+            <a class="nav-link" href="#att">Attivi</a>
+            <a class="nav-link" href="#eff">Effettuati</a>
+            <a class="nav-link" href="#dis">Disdeti</a>
+        </nav>
+    </aside>
+
+    <div  data-spy="scroll" data-target="#navbar-example3" data-offset="0" v-if="mostrareElenPre" id="myBooks" >
+        <h2 v-if="!admin">I miei prenotazioni</h2>
+        <h2 v-if="admin">Tutti i prenotazioni</h2>
         <div v-if="attivi.length===0" class="alert alert-warning">Non c'è nessuna prenotazione attivi.</div>
         <table v-if="attivi.length!==0" class="table">
+            <h3 id="att" class="tittleTable">Attivi:</h3>
             <tr>
                 <th v-if="admin" scope="col">Utente</th>
                 <th scope="col" >Ora</th>
@@ -108,9 +118,9 @@
         </table>
 
 
-        <h3>Effettuati:</h3>
         <div v-if="effettuati.length===0" class="alert alert-warning">Non c'è nessuna prenotazione effettuati.</div>
         <table v-if="effettuati.length!==0" class="table">
+            <h3 id="eff" class="tittleTable">Effettuati:</h3>
             <tr>
                 <th v-if="admin" scope="col">Utente</th>
                 <th scope="col">Ora</th>
@@ -132,9 +142,9 @@
         </table>
 
 
-        <h3>Disdeti:</h3>
         <div v-if="disdeti.length===0" class="alert alert-warning">Non c'è nessuna prenotazione disdeta.</div>
         <table v-if="disdeti.length!==0" class="table">
+            <h3 id="dis" class="tittleTable">Disdeti:</h3>
             <tr>
                 <th v-if="admin" scope="col">Utente</th>
                 <th scope="col">Ora</th>
@@ -152,6 +162,7 @@
                 <td>{{p.c.titulo}}</td>
             </tr>
         </table>
+
     </div>
 
 
@@ -236,6 +247,8 @@
             </table>
         </div>
     </div>
+
+    <footer>Sviluppato da un gruppo di studenti di erasmus.</footer>
 </div>
 
 <script>
