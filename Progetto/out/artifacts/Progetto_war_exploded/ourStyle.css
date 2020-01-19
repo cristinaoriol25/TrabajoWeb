@@ -16,15 +16,11 @@ nav {
     float: left;
 }
 
-nav span {
-    text-align:left;
-    margin-bottom:20px;
-    float: left;
-}
 
-nav span button {
-    float: left;
-    text-decoration:none;
+nav div span button {
+    background-color: #343a40;
+    border-color: #343a40;
+    color: #ffffff;
     padding: 2px 7px 2px 7px;
 }
 
@@ -62,6 +58,7 @@ nav span button {
 .tittleTable {
     color: darkgray;
     margin-top: 15px;
+    clear: both;
 }
 
 aside {
@@ -74,9 +71,23 @@ aside {
     top: 0;
 }
 
+.campo {
+    float: left;
+    width: 65%;
+    margin-bottom: 10px;
+}
+
+
+.but {
+    clear: both;
+}
+
 footer {
     width: 100%;
     clear: both;
     text-align: center;
     margin-top: 30px;
+    background-color: #343a40;
+    color: #ffffff;
 }
+

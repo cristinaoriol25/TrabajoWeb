@@ -42,12 +42,13 @@
         </div>
     </header>
 
-    <nav  v-if="!mostrareLog" class="navbar navbar-dark bg-dark">
-        <span class="navbar-brand mb-0 h1"><button class="navbar-toggler"  v-on:click="hider(); tabella = true">Prenotare</button></span>
-        <span class="navbar-brand mb-0 h1" v-if="!admin"><button  class="navbar-toggler"  v-on:click="hider(); mostrareElenPre = true">I miei prenotazioni</button></span>
-        <span class="navbar-brand mb-0 h1" v-if="admin"><button class="navbar-toggler"  v-on:click="hider(); mostrareElenPre = true" >Tutti i prenotazioni.</button></span>
-        <span class="navbar-brand mb-0 h1" v-if="admin" ><button class="navbar-toggler" v-on:click="hider(); impos = true">Impostazioni</button></span>
-
+    <nav  v-if="!mostrareLog"  class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div id="navbar">
+            <span class="navbar-brand mb-0 h1" ><button v-on:click="hider(); tabella = true">Prenotare</button></span>
+            <span class="navbar-brand mb-0 h1" v-if="!admin"><button    v-on:click="hider(); mostrareElenPre = true">I miei prenotazioni</button></span>
+            <span class="navbar-brand mb-0 h1" v-if="admin"><button   v-on:click="hider(); mostrareElenPre = true" >Tutti i prenotazioni.</button></span>
+            <span class="navbar-brand mb-0 h1" v-if="admin" ><button v-on:click="hider(); impos = true">Impostazioni</button></span>
+        </div>
     </nav>
 
 
@@ -179,15 +180,27 @@
         <h2>Impostazioni </h2>
 
         <h3 id="idoc" class="tittleTable">Inserire docente:</h3>
-        <p><label><b>Nome: </b></label>
-            <input type="text" v-model="nome"/>
-            <label  v-if="erroreDocNome"> Campo vuoto </label>
-        </p>
-        <p><label ><b>Cognome: </b></label>
-            <input type="text" v-model="cognome"/>
-            <label  v-if="erroreDocCognome"> Campo vuoto </label>
-        </p>
-        <p><button v-on:click="nuovoDoc" class="btn btn-light">Submit</button></p>
+        <div  class="campo">
+            <div class="input-group input-group-sm mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="inputGroup-sizing-sm">Nome:  </span>
+                </div>
+                <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" v-model="nome" required>
+            </div>
+        </div>
+        <label  v-if="erroreDocNome" class="alert alert-danger"> Campo vuoto </label>
+        <div  class="campo">
+            <div class="input-group input-group-sm mb-3" class="campo">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="inputGroup-sizing-sm">Cognome:  </span>
+                </div>
+                <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" v-model="cognome" required>
+                <br>
+            </div>
+        </div>
+        <label  v-if="erroreDocNome" class="alert alert-danger"> Campo vuoto </label>
+
+        <p class="but"><button v-on:click="nuovoDoc" class="btn btn-light">Submit</button></p>
 
         <h3 id="ldoc" class="tittleTable">Elenco di docenti:</h3>
         <div v-if="elencoDoc.length===0" class="alert alert-warning">Non c'è nessun docente registrato.</div>
@@ -204,12 +217,18 @@
             </tr>
         </table>
 
+
         <h3 id="icor" class="tittleTable">Inserire corso:</h3>
-        <p><label for="corso"><b>Corso: </b></label>
-            <input type="text" v-model="corso"/>
-            <label for="eCorso" v-if="erroreCorso"> Campo vuoto </label>
-        </p>
-        <p><button v-on:click="nuovoCor" class="btn btn-light">Submit</button></p>
+        <div class="campo">
+            <div class="input-group input-group-sm mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="inputGroup-sizing-sm">Corso: </span>
+                </div>
+                <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm"  v-model="corso" required>
+            </div>
+        </div>
+        <label  v-if="erroreCorso" class="alert alert-danger"> Campo vuoto </label>
+        <p class="but"><button v-on:click="nuovoCor" class="btn btn-light" id="bttCorso">Submit</button></p>
 
         <h3 id="lcor" class="tittleTable">Elenco di corsi:</h3>
         <div v-if="elencoCorsi.length===0" class="alert alert-warning">Non c'è nessun corso registrato.</div>
@@ -225,7 +244,6 @@
         </table>
 
         <h3 id="iass" class="tittleTable">Nuova associazione:</h3>
-        <p v-if="erroreAssoc">Inserire tutti i campi</p>
         <p>
             <select v-model="docSelect">
                 <option v-for="d in elencoDoc" :value="d">{{d.cognome}} {{d.nome}}</option>
@@ -235,6 +253,7 @@
                 <option v-for="c in elencoCorsi" :value="c">{{c.titulo}}</option>
             </select>
         </p>
+        <p v-if="erroreAssoc" class="alert alert-danger">Inserire tutti i campi</p>
         <p><button v-on:click="nuovaAssoc(docSelect,corSelect)" class="btn btn-light">Submit</button></p>
 
         <h3 id="lass" class="tittleTable">Elenco di associazioni:</h3>
