@@ -89,7 +89,7 @@
         <h2 v-if="!admin">I miei prenotazioni</h2>
         <h2 v-if="admin">Tutti i prenotazioni</h2>
         <h3 id="att" class="tittleTable">Attivi:</h3>
-        <div v-if="attivi.length===0" class="alert alert-warning">Non c'è nessuna prenotazione attivi.</div>
+        <div v-if="attivi.length===0" class="alert alert-warning">Non c'è nessuna prenotazione attiva.</div>
         <table v-if="attivi.length!==0" class="table">
             <tr>
                 <th v-if="admin" scope="col">Utente</th>
@@ -114,7 +114,7 @@
         </table>
 
         <h3 id="eff" class="tittleTable">Effettuati:</h3>
-        <div v-if="effettuati.length===0" class="alert alert-warning">Non c'è nessuna prenotazione effettuati.</div>
+        <div v-if="effettuati.length===0" class="alert alert-warning">Non c'è nessuna prenotazione effettuata.</div>
         <table v-if="effettuati.length!==0" class="table">
             <tr>
                 <th v-if="admin" scope="col">Utente</th>
