@@ -44,32 +44,7 @@ public class ServletController extends javax.servlet.http.HttpServlet {
         return JSONMan.serializeJson(prenotazioni);
 
     }
-    /*
-    private String creareDoc(String nome, String cognome, JSONManager JSONMan){
-        Docente doc = new Docente(nome, cognome);
-        creare(doc);
-        return JSONMan.serializeJson(doc);
-    }
 
-    private String creareCorso(String corso, JSONManager JSONMan){
-        Corso c = new Corso(corso);
-        if (creare(c)) {
-            return JSONMan.serializeJson("1");
-        } else {
-            return JSONMan.serializeJson("0");
-        }
-
-    }
-
-    private String  creareAssoc(Corso c,Docente doc, JSONManager JSONMan){
-        Associazione a = new Associazione(doc,c);
-        creare(a);
-        // La vista labora con la clase imparte.
-        ArrayList<Corso> arrayCorso = new ArrayList<Corso>();
-        arrayCorso.add(c);
-        return JSONMan.serializeJson(new Imparte(doc,arrayCorso));
-    }
-     */
 
     private void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
